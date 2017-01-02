@@ -1,3 +1,22 @@
-// This file is required by the index.html file and will
-// be executed in the renderer process for that window.
-// All of the Node.js APIs are available in this process.
+const TabGroup = require("electron-tabs");
+const dragula = require("dragula");
+
+var tabGroup = new TabGroup({
+    ready: function (tabGroup) {
+        dragula([tabGroup.tabContainer], {
+            direction: "horizontal"
+        });
+    }
+});
+let tab = tabGroup.addTab({
+    title: "Electron",
+    src: "http://electron.atom.io",
+    visible: true,
+    active :true
+});
+
+let tab2 = tabGroup.addTab({
+    title: "Electron 2",
+    src: "http://electron.atom.io",
+    visible: true
+});

@@ -11,23 +11,27 @@ var tabGroup = new TabGroup({
     }
 });
 let flTab = tabGroup.addTab({
-    title: "FIRST LEVEL",
-    src: statApi.getFirstLevelUri( appConfig.teamName),
+    title: "FL",
+    webviewAttributes: {
+        preload: './stat_patchers/ticket_list.js'
+    },
+    src: statApi.getFirstLevelUri(appConfig.teamName),
     visible: true,
-    active :true,
-    closable :false
+    active: true,
+    closable: false
 });
 
-let flView = flTab.webview;
-
-flView.addEventListener("dom-ready", function(){
-flView.executeJavaScript('$(".mdl-layout__header").hide();$("#top-bar").hide();');
-});
-
+// let flView = flTab.webview;
+// flView.addEventListener('dom-ready', () => {
+//   flView.openDevTools()
+// })
 
 let slTab = tabGroup.addTab({
-    title: "Electron 2",
-    src: "http://electron.atom.io",
+    title: "SL",
+ webviewAttributes: {
+        preload: './stat_patchers/ticket_list.js'
+    },
+    src: statApi.getFirstLevelUri(appConfig.teamName),
     visible: true,
-       closable :false
+    closable: false
 });

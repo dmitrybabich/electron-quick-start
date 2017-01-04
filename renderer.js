@@ -1,16 +1,37 @@
 const TabGroup = require("electron-tabs");
-const dragula = require("dragula");
+// const dragula = require("dragula");
 const appConfig = require("./app_config.js")
 const statApi = require("./stat_api.js")
 
 var tabGroup = new TabGroup({
-    ready: function (tabGroup) {
-        dragula([tabGroup.tabContainer], {
-            direction: "horizontal"
-        });
-    }
+    // ready: function (tabGroup) {
+    //     dragula([tabGroup.tabContainer], {
+    //         direction: "horizontal"
+    //     });
+    // }
 });
-let flTab = tabGroup.addTab({
+
+
+tabGroup.on("tab-added", (tab, tg) => {
+    let webview = tab.webview;
+    webview.addEventListener('new-window', (e) => {
+        
+       var matches = e.url.match(new RegExp("(?:.+)//isc.devexpress.com/Thread/WorkplaceDetails\\?id=(.+)"));
+       var id = matches.length == 2?  matches[1]:null ;
+        tg.addTab({
+            title: id,
+            webviewAttributes: {
+              //  preload: './stat_patchers/ticket_list.js'
+            },
+            src: e.url,
+            visible: true,
+            active: true,
+            closable: true
+        });
+    })
+});
+
+tabGroup.addTab({
     title: "FL",
     webviewAttributes: {
         preload: './stat_patchers/ticket_list.js'
@@ -26,12 +47,24 @@ let flTab = tabGroup.addTab({
 //   flView.openDevTools()
 // })
 
-let slTab = tabGroup.addTab({
+tabGroup.addTab({
     title: "SL",
- webviewAttributes: {
+    webviewAttributes: {
         preload: './stat_patchers/ticket_list.js'
     },
-    src: statApi.getFirstLevelUri(appConfig.teamName),
+    src: statApi.getSecondLevelUri(appConfig.teamName),
+    visible: true,
+    closable: false
+});
+
+
+
+tabGroup.addTab({
+    title: "ME",
+    webviewAttributes: {
+        preload: './stat_patchers/ticket_list.js'
+    },
+    src: statApi.getMeUri(appConfig.userId, appConfig.teamName),
     visible: true,
     closable: false
 });

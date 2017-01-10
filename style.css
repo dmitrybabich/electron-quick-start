@@ -1,0 +1,16 @@
+.stat-counter
+{
+  
+    margin-right: 5px;
+}
+
+.stat-counter.total
+{
+    color:#43A047;
+}
+
+
+.stat-counter.at
+{
+    color:#b71c1c;
+}

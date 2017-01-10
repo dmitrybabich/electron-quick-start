@@ -1,7 +1,15 @@
 const TabGroup = require("electron-tabs");
 // const dragula = require("dragula");
-const appConfig = require("./app_config.js")
-const statApi = require("./stat_api.js")
+const filesystem = require('fs');
+const fixedTabs = require("./scripts/fixed_tabs.js");
+const iscTabs = require("./scripts/isc_tabs.js");
+const actionProcessor = require("./scripts/action_processor.js");
+const path = require('path');
+
+iscTabs.subscribe((actionName, ticketId) => {
+    actionProcessor.processAction(actionName,ticketId);
+});
+var ticketCss = filesystem.readFileSync("./stat_patchers/isc_ticket.css");
 
 var tabGroup = new TabGroup({
     // ready: function (tabGroup) {
@@ -11,60 +19,18 @@ var tabGroup = new TabGroup({
     // }
 });
 
+tabGroup.on("tab-removed", (tab, tabGroup) => {
+    tab.ticketId = null;
+});
+
 
 tabGroup.on("tab-added", (tab, tg) => {
     let webview = tab.webview;
     webview.addEventListener('new-window', (e) => {
-        
-       var matches = e.url.match(new RegExp("(?:.+)//isc.devexpress.com/Thread/WorkplaceDetails\\?id=(.+)"));
-       var id = matches.length == 2?  matches[1]:null ;
-        tg.addTab({
-            title: id,
-            webviewAttributes: {
-              //  preload: './stat_patchers/ticket_list.js'
-            },
-            src: e.url,
-            visible: true,
-            active: true,
-            closable: true
-        });
+        iscTabs.checkNeedOpen(tabGroup, e);
     })
 });
 
-tabGroup.addTab({
-    title: "FL",
-    webviewAttributes: {
-        preload: './stat_patchers/ticket_list.js'
-    },
-    src: statApi.getFirstLevelUri(appConfig.teamName),
-    visible: true,
-    active: true,
-    closable: false
-});
-
-// let flView = flTab.webview;
-// flView.addEventListener('dom-ready', () => {
-//   flView.openDevTools()
-// })
-
-tabGroup.addTab({
-    title: "SL",
-    webviewAttributes: {
-        preload: './stat_patchers/ticket_list.js'
-    },
-    src: statApi.getSecondLevelUri(appConfig.teamName),
-    visible: true,
-    closable: false
-});
+fixedTabs.init(tabGroup);
 
 
-
-tabGroup.addTab({
-    title: "ME",
-    webviewAttributes: {
-        preload: './stat_patchers/ticket_list.js'
-    },
-    src: statApi.getMeUri(appConfig.userId, appConfig.teamName),
-    visible: true,
-    closable: false
-});

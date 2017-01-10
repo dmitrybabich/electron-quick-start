@@ -1,0 +1,16 @@
+@import url(https://fonts.googleapis.com/css?family=EB+Garamond&subset=cyrillic);
+body
+{
+    font-family: 'EB Garamond', serif;
+}
+
+
+#top-panel
+{
+    top : -40px;
+}
+    /*// $("#top-panel").css("top", "-40px");
+    // $("#main-container").css("top", "0px");
+    // $("#sidebar").css("top", "0px");
+    // $(".code-block").css("font-size", "14px");
+    // $(".code-block").css("line-height", "24px");*/

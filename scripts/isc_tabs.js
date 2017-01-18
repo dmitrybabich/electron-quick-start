@@ -7,6 +7,8 @@ class IscTabs {
     checkNeedOpen(tabGroup, e) {
         var self = this;
         var matches = e.url.match(new RegExp("(?:.+)//isc.devexpress.com/Thread/WorkplaceDetails\\?id=(.+)"));
+        if (!matches)
+        return;
         var id = matches.length == 2 ? matches[1] : null;
         if (!id)
             return;
@@ -32,19 +34,20 @@ class IscTabs {
         }
     }
 
-    processAction(action, ticketId) {
-       this.processAction(action, ticketId);
+    processAction(action, ticketId, webView) {
+       this.processAction(action, ticketId, webView);
     }
 
 
     onWebViewReady(tabItem) {
+        
         var self = this;
         var func = () => {
             var webView = tabItem.webview;
             //webView.openDevTools();
             webView.addEventListener('ipc-message', function (event) {
                 var action = event.channel;
-                self.processAction(action, tabItem.ticketId);
+                self.processAction(action, tabItem.ticketId, webView);
             });
         };
         setTimeout(func, 500);

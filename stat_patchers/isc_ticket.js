@@ -1,9 +1,21 @@
 const {ipcRenderer} = require('electron');
+const fs = require('fs');
 
-var appendscript = (uri) => {
+var appendTextScript = (path) => {
+    fs.readFile(path, 'utf8', function (err, data) {
+        appendscript(undefined, data);
+    });
+
+}
+
+
+var appendscript = (uri, innerhtml) => {
     var script = document.createElement('script');
     script.type = 'text/javascript';
-    script.src = uri;
+    if (uri)
+        script.src = uri;
+    if (innerhtml)
+        script.innerHTML = innerhtml;
     $(document.body).append(script);
 };
 var appendcss = (uri) => {
@@ -54,8 +66,8 @@ var appendCustomButtons = function () {
 }
 
 var func = () => {
-    // appendscript("https://supportserver/LanguageStatistics/GetPlugin/Checker/checker.user.js");
-    appendscript("https://internal.devexpress.com/supportstat/GetPlugin/CaTPlugin.user.js");
+    appendTextScript("stat_patchers/checker.js");
+    appendTextScript("stat_patchers/cat.js");
     var cssUri = "https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900&subset=cyrillic";
     appendcss(cssUri);
     setTimeout(() => {

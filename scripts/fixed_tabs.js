@@ -56,10 +56,10 @@ class FixedTabsHelper {
         const statApi = require("./stat_api.js");
         const appConfig = require("./app_config.js");
         this.tabGroup = tabGroup;
-        //    this.addFixedTab({ title: "FL", src: "https://isc.devexpress.com/Thread/WorkplaceDetails?id=T442816", active: true }, statApi.getFirstLevelTicketCountUri(appConfig.teamName));
-        this.addFixedTab({ title: "FL", src: statApi.getFirstLevelUri(appConfig.teamName), active: true }, statApi.getFirstLevelTicketCountUri(appConfig.teamName));
-        this.addFixedTab({ title: "SL", src: statApi.getSecondLevelUri(appConfig.teamName) }, statApi.getSecondLevelTicketCountUri(appConfig.teamName));
-        this.addFixedTab({ title: "ME", src: statApi.getMeUri(appConfig.userId, appConfig.teamName) }, statApi.getMeTicketCountUri(appConfig.userId, appConfig.teamName));
+        // this.addFixedTab({ title: "FL", src: "https://isc.devexpress.com/Thread/WorkplaceDetails?id=T472973", active: true }, statApi.getFirstLevelTicketCountUri(appConfig.teamName));
+        // this.addFixedTab({ title: "FL", src: statApi.getFirstLevelUri(appConfig.teamName), active: true }, statApi.getFirstLevelTicketCountUri(appConfig.teamName));
+        // this.addFixedTab({ title: "SL", src: statApi.getSecondLevelUri(appConfig.teamName) }, statApi.getSecondLevelTicketCountUri(appConfig.teamName));
+        // this.addFixedTab({ title: "ME", src: statApi.getMeUri(appConfig.userId, appConfig.teamName) }, statApi.getMeTicketCountUri(appConfig.userId, appConfig.teamName));
     }
 }
 module.exports = new FixedTabsHelper();

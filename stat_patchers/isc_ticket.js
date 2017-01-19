@@ -50,16 +50,20 @@ var appendCustomButton = function (rootContainer, iconName, actionName, title) {
     $(container).append(button);
 };
 
+var patchLinks = function () {
+    $("a").attr("_target", "blank");
+}
+
 var appendCustomButtons = function () {
 
     var rootContainer = $(".tabbed-bar-nav");
     var container = $("<div></div>");
     container.css("padding-top", "15px");
     rootContainer.append(container);
-    appendCustomButton(container, "icon-copy", "copy-path", "Copy path");
-    appendCustomButton(container, "icon-folder-open", "open-folder", "Open folder");
-    appendCustomButton(container, "icon-plus-sign", "create-project", "Create new project");
-    appendCustomButton(container, "icon-archive", "archive-project", "ZIP project");
+    appendCustomButton(container, "icon-copy", "copy-path", "Copy path (ctrl+shift+c)");
+    appendCustomButton(container, "icon-folder-open", "open-folder", "Open folder (ctrl+shift+o)");
+    appendCustomButton(container, "icon-plus-sign", "create-project", "Create new project (ctrl+shift+t)");
+    appendCustomButton(container, "icon-archive", "archive-project", "ZIP project (ctrl+shift+z)");
     appendCustomButton(container, "icon-facetime-video", "create-video-link", "Create video link");
     appendCustomButton(container, "icon-picture", "create-image-link", "Create image link");
     appendCustomButton(container, "icon-rotate-right", "convert-project", "Convert project");
@@ -84,8 +88,122 @@ var func = () => {
         $("h4").css("font-size", "18px");
         $("h4").css("font-weight", "400");
         appendCustomButtons();
-    }, 500);
+        patchLinks();
+    }, 10);
 
 
 };
-document.addEventListener("DOMContentLoaded", func)
+
+document.addEventListener("DOMContentLoaded", func);
+
+
+
+
+document.addEventListener("DOMContentLoaded", () => {
+    var iscTools = function () {
+        var self = this;
+        self.SelectedIDEHelper = new function () {
+            var self = this;
+            self.run = function () {
+                var replaceFunc = (item) => {
+                    item.Text = item.Text.replace('Microsoft Visual Studio .NET', 'VS');
+                    item.Text = item.Text.replace('Microsoft Visual Studio', 'VS');
+                    item.Text = item.Text.replace('Microsoft Visual Web Developer', 'WebDev');
+                };
+                var ds = fullViewModel.issueDetails.selectedIDE.itemsForRendering();
+                ds.forEach(replaceFunc);
+                fullViewModel.issueDetails.selectedIDE.itemsForRendering(ds);
+            };
+
+        };
+
+
+        self.ActiveEditorHelper = new function () {
+            var self = this;
+            self.createButton = function (text, clickFunc) {
+                var $btn = $("<a></a>");
+                $btn.text(text);
+                $btn.attr('href', '#');
+                $btn.css('padding', '5px');
+                $btn.css('margin', '5px 5px 5px 0px');
+                $btn.css('border', 'none');
+                $btn.css('background', 'white');
+                $btn.css('color', 'gray');
+                $btn.addClass('btn');
+                $btn.click(clickFunc);
+                return $btn;
+            };
+            self.addGreeting = function (editor) {
+                var fullName = fullViewModel.issueDetails.ticketOwner.publicName();
+                var name = fullName.split(' ')[0];
+                var firstLetter = name[0];
+                var remainingLetters = name.substring(1);
+                var finalName = firstLetter.toUpperCase() + remainingLetters.toLowerCase();
+                editor.insertContent('Hello ' + finalName + ',');
+                editor.insertContent('<br>');
+                editor.insertContent('<br>');
+            };
+            self.addEditorButtons = function (editor) {
+                var $buttonContainer = $("<div></div>")
+                var $cont = $(editor.editorContainer).parents(".control-group").first();
+                $cont.append($buttonContainer);
+                var $trimButton = self.createButton('Trim', function () { self.trimEditor(editor); });
+                $buttonContainer.append($trimButton);
+                var $helloButton = self.createButton('Hello', function () { self.addGreeting(editor); });
+                $buttonContainer.append($helloButton);
+            };
+            self.updateEditors = function () {
+                var editors = tinymce.editors;
+                editors.forEach(self.addEditorButtons)
+            };
+            self.trimCore = function (str, val) {
+                var re = new RegExp('^' + val, "g");
+                var re2 = new RegExp(val, "g");
+                str = str.replace(re, '');
+                for (var i = str.length - 1; i >= 0; i--) {
+                    if (re2.test(str.charAt(i))) {
+                        str = str.substring(0, i + 1);
+                        break;
+                    }
+                }
+                return str;
+
+            };
+            self.removeDoubleSpaces = function (text) {
+                for (var i = 0; i < 10; i++) {
+                    text = text.replace(/ +(?= )/g, '');
+                    text = text.replace(/ &nbsp;+(?= )/g, '');
+                    text = text.replace(/&nbsp;+(?= )/g, '');
+                    text = text.replace(/ +(?= )/g, '');
+                }
+                return text;
+            };
+            self.trimEditor = function (editor) {
+                var text = editor.getContent();
+                text = self.trimCore(text, '&nbsp;');
+                text = self.removeDoubleSpaces(text);
+                for (var i = 0; i < 10; i++) {
+                    text = self.trimCore(text, '<br />');
+                    text = text.replace('<br /><br />', '<br />');
+                }
+                editor.setContent(text);
+            }
+
+            self.run = function () {
+                self.updateEditors();
+            };
+        };
+
+        //========START==========
+        self.run = function () {
+            setTimeout(function () {
+                self.SelectedIDEHelper.run();
+                self.ActiveEditorHelper.run();
+            }, 2000);
+        }
+    }
+    var iscTools = new iscTools();
+    window.iscTools = iscTools;
+    iscTools.run();
+});
+

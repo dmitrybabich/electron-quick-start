@@ -1,5 +1,6 @@
 class DebugMode {
     ifDebug(action) {
+        return;
         action();
     }
 }

@@ -9,10 +9,15 @@ const path = require('path');
 const Combokeys = require("combokeys");
 var shortcuts = new Combokeys(document.documentElement);
 const {snackbar} = require('./scripts/ui.js');
-var ipcRenderer = require('electron').ipcRenderer;
+var electron = require('electron');
+var ipcRenderer = electron.ipcRenderer;
+var shell = electron.shell;
+const clipboard = electron.clipboard;
 
+// import { SpellCheckHandler, ContextMenuListener, ContextMenuBuilder } from 'electron-spellchecker';
 
-
+var SpellCheckProvider = require('electron-spell-check-provider');
+debugger;
 shortcuts.bind('ctrl+shift+d', function () {
     snackbar.showText("DevTools");
     var tab = tabGroup.getActiveTab();
@@ -39,6 +44,7 @@ registerISCActionShortcut('ctrl+shift+o', "Open folder", "open-folder");
 registerISCActionShortcut('ctrl+shift+t', "Template Projects", "create-project");
 registerISCActionShortcut('ctrl+shift+z', "ZIP Project", "archive-project");
 
+
 iscTabs.subscribe((actionName, ticketId, webview) => {
     actionProcessor.processAction(actionName, ticketId, webview);
 });
@@ -55,19 +61,39 @@ tabGroup.on("tab-active", (tab, tabGroup) => {
 
 tabGroup.on("tab-added", (tab, tg) => {
     let webview = tab.webview;
-    webview.addEventListener('new-window', (e) => {
-        var downloadMatches = downloader.checkDonwloadLink(e.url);
+    var func = (url) => {
+        var downloadMatches = downloader.checkDonwloadLink(url);
         if (downloadMatches)
-            webview.getWebContents().downloadURL(e.url);
-        else
-            iscTabs.checkNeedOpen(tabGroup, e);
+            webview.getWebContents().downloadURL(url);
+        else {
+            if (!iscTabs.checkNeedOpen(tabGroup, url)) {
+                shell.openExternal(url);
+            }
+        }
+    };
+    webview.addEventListener('new-window', (e) => {
+        func(e.url);
     });
+    webview.addEventListener('will-navigate', (e) => {
+        webview.stop();
+        func(e.url);
+        webview.stop();
+    });
+    tab.tab.setAttribute("style", "-webkit-app-region: no-drag;");
 });
-var e = {};
-e.url = "https://isc.devexpress.com/Thread/WorkplaceDetails?id=T473370";
-iscTabs.checkNeedOpen(tabGroup, e);
+
+//iscTabs.checkNeedOpen(tabGroup, "https://isc.devexpress.com/Thread/WorkplaceDetails?id=T473370");
 
 fixedTabs.init(tabGroup);
 
 
+var tabGroupElement = document.getElementsByClassName('etabs-tabgroup');
+tabGroupElement[0].setAttribute("style", "-webkit-app-region: drag;");
 
+shortcuts.bind('alt+shift+q', function () {
+    var ticketID = clipboard.readText();
+    if (ticketID && ticketID.length <= 7) {
+        snackbar.showText('Opening ticket ' + ticketID);
+        iscTabs.checkNeedOpen(tabGroup, "https://isc.devexpress.com/Thread/WorkplaceDetails?id=" + ticketID);
+    }
+});

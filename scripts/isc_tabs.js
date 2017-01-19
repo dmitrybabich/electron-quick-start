@@ -4,11 +4,11 @@ class IscTabs {
         this.processAction = action;
     }
 
-    checkNeedOpen(tabGroup, e) {
+    checkNeedOpen(tabGroup, url) {
         var self = this;
-        var matches = e.url.match(new RegExp("(?:.+)//isc.devexpress.com/Thread/WorkplaceDetails\\?id=(.+)"));
+        var matches = url.match(new RegExp("(?:.+)//isc.devexpress.com/Thread/WorkplaceDetails\\?id=(.+)"));
         if (!matches)
-        return;
+            return;
         var id = matches.length == 2 ? matches[1] : null;
         if (!id)
             return;
@@ -22,7 +22,7 @@ class IscTabs {
                 webviewAttributes: {
                     preload: './stat_patchers/isc_ticket.js'
                 },
-                src: e.url,
+                src: url,
                 visible: true,
                 active: true,
                 closable: true,
@@ -32,6 +32,7 @@ class IscTabs {
             });
             tab.ticketId = id;
         }
+        return true;
     }
 
     processAction(action, ticketId, webView) {

@@ -1,6 +1,5 @@
 .stat-counter
 {
-  
     margin-right: 5px;
 }
 
@@ -13,4 +12,9 @@
 .stat-counter.at
 {
     color:#b71c1c;
+}
+
+.etabs-tabgroup:hover
+{
+ background: #bcc;
 }

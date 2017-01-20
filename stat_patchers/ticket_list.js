@@ -10,7 +10,6 @@ window.getJSON = function (uri) {
         document.addEventListener("DOMContentLoaded", func);
     else
         func();
-
 };
 
 
@@ -26,15 +25,14 @@ document.addEventListener("DOMContentLoaded", function (event) {
         $(".mdl-layout__container").remove();
         ticketList.css('height', 'calc(100vh)');
         ticketList.css('position', 'fixed');
-        ticketList.css('top', '1px');
-        ticketList.css('left', '0px');
-        ticketList.css('right', '0px');
-        ticketList.css('bottom', '0px');
+        ticketList.css('top', '10px');
+        ticketList.css('left', '10px');
+        ticketList.css('right', '10px');
+        ticketList.css('bottom', '10px');
         $('<div id="ticket-list-main-grid"></div>').appendTo(document.body);
         $('<div id="main-app-container"></div>').appendTo(document.body);
         ticketList.appendTo(document.body);
-
-    }, 3000);
+    }, 5000);
 
 
 

@@ -14,15 +14,19 @@ var ipcRenderer = electron.ipcRenderer;
 var shell = electron.shell;
 const clipboard = electron.clipboard;
 
-// import { SpellCheckHandler, ContextMenuListener, ContextMenuBuilder } from 'electron-spellchecker';
-
-var SpellCheckProvider = require('electron-spell-check-provider');
-debugger;
 shortcuts.bind('ctrl+shift+d', function () {
     snackbar.showText("DevTools");
     var tab = tabGroup.getActiveTab();
     var vw = tab.webview;
     vw.openDevTools();
+});
+
+
+shortcuts.bind('ctrl+shift+r', function () {
+    snackbar.showText("Reload");
+    var tab = tabGroup.getActiveTab();
+    var vw = tab.webview;
+    vw.reload();
 });
 
 shortcuts.bind('ctrl+w', function () {
@@ -45,8 +49,8 @@ registerISCActionShortcut('ctrl+shift+t', "Template Projects", "create-project")
 registerISCActionShortcut('ctrl+shift+z', "ZIP Project", "archive-project");
 
 
-iscTabs.subscribe((actionName, ticketId, webview) => {
-    actionProcessor.processAction(actionName, ticketId, webview);
+iscTabs.subscribe((actionName, ticketId, webview, data, tabItem) => {
+    actionProcessor.processAction(actionName, ticketId, webview, data, tabItem);
 });
 var ticketCss = filesystem.readFileSync("./stat_patchers/isc_ticket.css");
 
@@ -74,15 +78,15 @@ tabGroup.on("tab-added", (tab, tg) => {
     webview.addEventListener('new-window', (e) => {
         func(e.url);
     });
-    webview.addEventListener('will-navigate', (e) => {
-        webview.stop();
-        func(e.url);
-        webview.stop();
-    });
+    // webview.addEventListener('will-navigate', (e) => {
+    //     webview.stop();
+    //     func(e.url);
+    //     webview.stop();
+    // });
     tab.tab.setAttribute("style", "-webkit-app-region: no-drag;");
 });
 
-//iscTabs.checkNeedOpen(tabGroup, "https://isc.devexpress.com/Thread/WorkplaceDetails?id=T473370");
+//iscTabs.checkNeedOpen(tabGroup, "https://isc.devexpress.com/Thread/WorkplaceDetails?id=T416406");
 
 fixedTabs.init(tabGroup);
 

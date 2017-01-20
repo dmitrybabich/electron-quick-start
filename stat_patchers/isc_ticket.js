@@ -1,13 +1,23 @@
 const {ipcRenderer} = require('electron');
 const fs = require('fs');
 
+
+
+var webFrame = require('electron').webFrame
+var spellChecker = require('spellchecker');
+
+webFrame.setSpellCheckProvider("en-US", true, {
+    spellCheck: function (text) {
+        return !(spellChecker.isMisspelled(text));
+    }
+});
+
 var appendTextScript = (path) => {
     fs.readFile(path, 'utf8', function (err, data) {
         appendscript(undefined, data);
     });
 
 }
-
 
 var appendscript = (uri, innerhtml) => {
     var script = document.createElement('script');
@@ -16,8 +26,11 @@ var appendscript = (uri, innerhtml) => {
         script.src = uri;
     if (innerhtml)
         script.innerHTML = innerhtml;
+    var head = document.getElementsByTagName("head")[0];
     $(document.body).append(script);
+    console.log("Appended " + uri);
 };
+
 var appendcss = (uri) => {
     var head = document.getElementsByTagName('head')[0];
     var link = document.createElement('link');
@@ -72,11 +85,14 @@ var appendCustomButtons = function () {
 var func = () => {
     appendTextScript("stat_patchers/checker.js");
     appendTextScript("stat_patchers/cat.js");
-    var cssUri = "https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900&subset=cyrillic";
-    appendcss(cssUri);
+    $("#top-panel").css("top", "-40px");
+    $("#main-container").css("top", "0px");
     setTimeout(() => {
-        $("#top-panel").css("top", "-40px");
-        $("#main-container").css("top", "0px");
+        setTimeout(function () {
+
+        }, 1000);
+        var cssUri = "https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900&subset=cyrillic";
+        appendcss(cssUri);
         $("#sidebar").css("top", "0px");
         $(".code-block").css("font-size", "14px");
         $(".code-block").css("line-height", "22px");
@@ -89,7 +105,7 @@ var func = () => {
         $("h4").css("font-weight", "400");
         appendCustomButtons();
         patchLinks();
-    }, 10);
+    }, 2000);
 
 
 };
@@ -130,7 +146,10 @@ document.addEventListener("DOMContentLoaded", () => {
                 $btn.css('background', 'white');
                 $btn.css('color', 'gray');
                 $btn.addClass('btn');
-                $btn.click(clickFunc);
+                $btn.click(function (e) {
+                    e.preventDefault();
+                    clickFunc();
+                });
                 return $btn;
             };
             self.addGreeting = function (editor) {
@@ -152,9 +171,50 @@ document.addEventListener("DOMContentLoaded", () => {
                 var $helloButton = self.createButton('Hello', function () { self.addGreeting(editor); });
                 $buttonContainer.append($helloButton);
             };
+            self.isDraftTicket = function () {
+                var newItems = fullViewModel.newItems;
+                let isDraft = false;
+                for (var item in newItems) {
+                    if (newItems[item].Text.currentValue())
+                        isDraft = true;
+                }
+                for (var item in fullViewModel.issueHistoryItems) {
+                    var historyItem = fullViewModel.issueHistoryItems[item];
+                    var draft = historyItem.Draft;
+                    if (draft && draft.currentValue())
+                        isDraft = true;
+                    for (var cItem in historyItem.comments) {
+                        var comment = historyItem.comments[cItem];
+                        var draft = comment.Draft;
+                        if (draft && draft.currentValue())
+                            isDraft = true;
+                    }
+                }
+                return isDraft;
+            };
+            self.updateDraftState = function () {
+                setTimeout(() => {
+                    var isDraft = self.isDraftTicket();
+                    ipcRenderer.sendToHost("update-draft-state", isDraft);
+                }, 1000);
+            };
+            self.onEditorFocus = function () {
+                self.updateDraftState();
+            };
+            self.onEditorLeave = function () {
+                self.updateDraftState();
+            };
             self.updateEditors = function () {
                 var editors = tinymce.editors;
-                editors.forEach(self.addEditorButtons)
+                editors.forEach(self.addEditorButtons);
+                editors.forEach((editor) => {
+                    editor.on('focus', function (e) {
+                        self.onEditorFocus(e);
+                    });
+                    editor.on('blur', function (e) {
+                        self.onEditorLeave(e);
+                    });
+                });
             };
             self.trimCore = function (str, val) {
                 var re = new RegExp('^' + val, "g");
@@ -190,6 +250,8 @@ document.addEventListener("DOMContentLoaded", () => {
             }
 
             self.run = function () {
+                setInterval(self.updateDraftState, 60000);
+                setTimeout(self.updateDraftState, 5000);
                 self.updateEditors();
             };
         };
@@ -199,7 +261,7 @@ document.addEventListener("DOMContentLoaded", () => {
             setTimeout(function () {
                 self.SelectedIDEHelper.run();
                 self.ActiveEditorHelper.run();
-            }, 2000);
+            }, 5000);
         }
     }
     var iscTools = new iscTools();

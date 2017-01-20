@@ -140,11 +140,27 @@ class TicketProcessor {
 }
 
 class ActionProcessor {
+
     constructor() {
 
     }
 
-    processAction(actionName, ticketId) {
+    updateDraftState(tabItem, data) {
+        var isDraft = data[0];
+        const CLASS_NAME = "draft-icon";
+        var tabElement = tabItem.tab;
+        var firstElement = tabElement.childNodes[0];
+        var isIcon = firstElement.className === CLASS_NAME;
+        var el = firstElement;
+        if (!isIcon) {
+            el = document.createElement("span");
+            el.className = CLASS_NAME;
+            tabElement.insertBefore(el, firstElement);
+        }
+        el.innerText = isDraft ? '*' : '';
+    }
+
+    processAction(actionName, ticketId, webview, data, tabItem) {
         if (!ticketId)
             return;
         var tp = new TicketProcessor(ticketId);
@@ -156,6 +172,7 @@ class ActionProcessor {
             case "create-video-link": tp.createVideoLink(); break;
             case "create-image-link": tp.createImageLink(); break;
             case "convert-project": tp.convertToVB(); break;
+            case "update-draft-state": this.updateDraftState(tabItem, data); break;
         }
     }
 

@@ -35,20 +35,20 @@ class IscTabs {
         return true;
     }
 
-    processAction(action, ticketId, webView) {
-       this.processAction(action, ticketId, webView);
+    processAction(action, ticketId, webView, data, tabItem) {
+        this.processAction(action, ticketId, webView, data, tabItem);
     }
 
 
     onWebViewReady(tabItem) {
-        
+
         var self = this;
         var func = () => {
             var webView = tabItem.webview;
             //webView.openDevTools();
             webView.addEventListener('ipc-message', function (event) {
                 var action = event.channel;
-                self.processAction(action, tabItem.ticketId, webView);
+                self.processAction(action, tabItem.ticketId, webView, event.args, tabItem);
             });
         };
         setTimeout(func, 500);

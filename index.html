@@ -18,14 +18,22 @@
     <div class="etabs-buttons"></div>
   </div>
   <div class="etabs-views"></div>
+
   <div id="snackbar" class="mdl-js-snackbar mdl-snackbar">
     <div class="mdl-snackbar__text"></div>
     <button class="mdl-snackbar__action" type="button"></button>
   </div>
-
+  <!--<div id="status-bar" data-bind="foreach:data">
+    <span data-bind="text:Name"></span>
+    <span data-bind="text:Value"></span>
+  </div>-->
 </body>
 <script>
   require('./renderer.js')
+  // const {RepliesItem} = require('./scripts/status_bar.js')
+  // var ri = new RepliesItem();
+  // ri.runGetData();
+  // ri.ko.applyBindings(ri, document.getElementById("status-bar"));
 </script>
 
 </html>

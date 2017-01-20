@@ -13,21 +13,20 @@ const debugMode = require("./scripts/debug_mode");
 let mainWindow;
 function createWindow() {
   mainWindow = new BrowserWindow({ width: 800, height: 600, frame: false });
-  // mainWindow.setMenu(null);
-  //  mainWindow.setMenuBarVisibility(false);
 
-  // mainWindow.spellCheckHandler = new SpellCheckHandler();
-  // mainWindow.spellCheckHandler.attachToInput();
+
+
+
+  // window.spellCheckHandler = new SpellCheckHandler();
+  // window.spellCheckHandler.attachToInput();
 
   // // Start off as US English, America #1 (lol) 
-  // mainWindow.spellCheckHandler.switchLanguage('en-US');
+  // window.spellCheckHandler.switchLanguage('en-US');
 
-  // let contextMenuBuilder = new ContextMenuBuilder(mainWindow.spellCheckHandler);
+  // let contextMenuBuilder = new ContextMenuBuilder(window.spellCheckHandler);
   // let contextMenuListener = new ContextMenuListener((info) => {
   //   contextMenuBuilder.showPopupMenu(info);
   // });
-
-
 
   var session = mainWindow.webContents.session;
   downloader.registerWindow(mainWindow);

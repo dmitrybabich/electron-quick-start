@@ -6,7 +6,7 @@
   "main": "main.js",
   "scripts": {
     "start": "electron .",
-    "package-win": "electron-packager . --overwrite --asar=true --platform=win32 --arch=ia32 --icon=assets/icons/win/icon.ico --prune=true --out=release-builds --version-string.CompanyName=CE --version-string.FileDescription=CE --version-string.ProductName=\"ISC Tools App\""
+    "package-win": "electron-packager . --overwrite --asar=true --icon=assets/icons/win/icon.ico --prune=true --out=release-builds --version-string.CompanyName=CE --version-string.FileDescription=CE --version-string.ProductName=\"ISC Tools App\""
   },
   "repository": "https://github.com/electron/electron-quick-start",
   "keywords": [
@@ -20,7 +20,8 @@
   "license": "CC0-1.0",
   "devDependencies": {
     "electron": "^1.4.13",
-    "electron-packager": "^8.5.0"
+    "electron-packager": "^8.5.0",
+    "electron-rebuild": "^1.5.7"
   },
   "dependencies": {
     "combokeys": "2.4.6",
@@ -28,7 +29,11 @@
     "electron-dl": "^1.6.0",
     "electron-download-manager": "^1.1.0",
     "electron-tabs": "^0.4.2",
+    "knockout": "^3.4.1",
+    "npm-cli": "^0.1.0",
     "request": "^2.79.0",
-    "request-promise": "^4.1.1"
+    "request-promise": "^4.1.1",
+    "spawn-rx": "^2.0.8",
+    "spellchecker": "^3.3.1"
   }
 }

@@ -2,16 +2,16 @@ class FixedTabsHelper {
     addFixedTab(customProps, ticketCountUri) {
         var props = {
             webviewAttributes: {
-                preload: './stat_patchers/ticket_list.js'
+                preload:  customProps.disablePatchers? undefined : './stat_patchers/ticket_list.js',
             },
             visible: true,
             closable: false,
-            webpreferences: "allowDisplayingInsecureContent, allowRunningInsecureContent",
             ready: (tab) => {
                 this.enableTicketCountUpdates(tab, ticketCountUri);
             }
         }
         for (var prop in customProps) props[prop] = customProps[prop];
+        
         var tab = this.tabGroup.addTab(props);
     };
 
@@ -29,7 +29,6 @@ class FixedTabsHelper {
         var counter = this.addCounter(tab, 'total');
         var atCounter = this.addCounter(tab, 'at');
         var func = () => {
-            //  wv.openDevTools();
             wv.executeJavaScript(`window.getJSON("${uri}");`);
         };
         wv.addEventListener('dom-ready', () => {
@@ -42,7 +41,7 @@ class FixedTabsHelper {
             });
             func();
         })
-        setInterval(func, 60000);
+        setInterval(func, 30000);
     }
 
     setTitle(jsonWebView, tab, uri) {
@@ -56,9 +55,11 @@ class FixedTabsHelper {
         const statApi = require("./stat_api.js");
         const appConfig = require("./app_config.js");
         this.tabGroup = tabGroup;
+        this.addFixedTab({ title: "S", src: statApi.getRepliesUrl(), disablePatchers: true });
         this.addFixedTab({ title: "FL", src: statApi.getFirstLevelUri(appConfig.teamName), active: true }, statApi.getFirstLevelTicketCountUri(appConfig.teamName));
         this.addFixedTab({ title: "SL", src: statApi.getSecondLevelUri(appConfig.teamName) }, statApi.getSecondLevelTicketCountUri(appConfig.teamName));
         this.addFixedTab({ title: "ME", src: statApi.getMeUri(appConfig.userId, appConfig.teamName) }, statApi.getMeTicketCountUri(appConfig.userId, appConfig.teamName));
+
     }
 }
 module.exports = new FixedTabsHelper();

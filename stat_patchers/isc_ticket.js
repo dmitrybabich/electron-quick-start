@@ -170,6 +170,38 @@ document.addEventListener("DOMContentLoaded", () => {
                 $buttonContainer.append($trimButton);
                 var $helloButton = self.createButton('Hello', function () { self.addGreeting(editor); });
                 $buttonContainer.append($helloButton);
+                var $suggestionContainer = $("<div></div>");
+                $buttonContainer.append($suggestionContainer);
+                editor.suggCont = $suggestionContainer;
+            };
+            self.updateSuggestions = function (editor) {
+                setTimeout(() => {
+                    self.updateSuggestionsCore(editor);
+                }, 1000);
+            }
+            self.updateSuggestionsCore = function (editor) {
+                if (!editor)
+                    return;
+                var $suggestionContainer = editor.suggCont;
+                $suggestionContainer.empty();
+                var currentWords = self.getFocusedWord();
+                var currentWord = null;
+                if (currentWords.length == 1)
+                    currentWord = currentWords[0];
+                if (!currentWord)
+                    return;
+                if (!spellChecker.isMisspelled(currentWord))
+                    return;
+                var suggestions = spellChecker.getCorrectionsForMisspelling(currentWord);
+                var text = "";
+                suggestions.forEach((s) => {
+                    var button = self.createSuggestionButton(editor, currentWord, s);
+                    $suggestionContainer.append(button);
+                });
+                var button = self.createButton("Add" + currentWord + " to dictionary", function () {
+                    spellChecker.add(currentWord);
+                });
+                $suggestionContainer.append(button);
             };
             self.isDraftTicket = function () {
                 var newItems = fullViewModel.newItems;
@@ -198,16 +230,33 @@ document.addEventListener("DOMContentLoaded", () => {
                     ipcRenderer.sendToHost("update-draft-state", isDraft);
                 }, 1000);
             };
+            self.createSuggestionButton = function (editor, oldText, newText) {
+                var $button = self.createButton(newText, function () {
+                    self.correctText(editor, newText, oldText);
+                });
+                return $button;
+            };
+
+            self.correctText = function (editor, newText, oldText) {
+                var text = editor.getContent();
+                text = text.replace(oldText, newText);
+                editor.setContent(text);
+            };
             self.onEditorFocus = function () {
                 self.updateDraftState();
+                self.updateSuggestions();
             };
             self.onEditorLeave = function () {
                 self.updateDraftState();
+                self.updateSuggestions();
             };
             self.updateEditors = function () {
                 var editors = tinymce.editors;
                 editors.forEach(self.addEditorButtons);
                 editors.forEach((editor) => {
+                    editor.on('NodeChange', function (ed) {
+                        self.updateSuggestions(editor);
+                    });
                     editor.on('focus', function (e) {
                         self.onEditorFocus(e);
                     });
@@ -215,6 +264,16 @@ document.addEventListener("DOMContentLoaded", () => {
                         self.onEditorLeave(e);
                     });
                 });
+            };
+
+            self.getFocusedWord = function () {
+                var sel = tinymce.activeEditor.selection.getSel();
+                var value = sel.focusNode.data;
+                var caretEnd = sel.focusOffset;
+                var lastIndex = value.indexOf(' ', caretEnd);
+                if (lastIndex == -1)
+                    lastIndex = undefined;
+                return /\S+$/.exec(value.slice(0, lastIndex));
             };
             self.trimCore = function (str, val) {
                 var re = new RegExp('^' + val, "g");

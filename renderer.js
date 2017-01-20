@@ -86,9 +86,9 @@ tabGroup.on("tab-added", (tab, tg) => {
     tab.tab.setAttribute("style", "-webkit-app-region: no-drag;");
 });
 
-//iscTabs.checkNeedOpen(tabGroup, "https://isc.devexpress.com/Thread/WorkplaceDetails?id=T416406");
+iscTabs.checkNeedOpen(tabGroup, "https://isc.devexpress.com/Thread/WorkplaceDetails?id=T416406");
 
-fixedTabs.init(tabGroup);
+//fixedTabs.init(tabGroup);
 
 
 var tabGroupElement = document.getElementsByClassName('etabs-tabgroup');

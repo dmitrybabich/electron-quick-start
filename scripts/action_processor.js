@@ -34,14 +34,30 @@ class TicketProcessor {
         return this._path.join(this.appConfig.zipProjectDirectory, this.ticketId)
     }
 
-    findSln(path) {
-        var files = this.fs.readdirSync(path);
-        for (var i in files) {
-            var fileName = files[i];
-            if (this._path.extname(fileName) === ".sln") {
-                return fileName;
+    walk(fs, dir, callBack) {
+        var func = (item) => { return this.walk(fs, item, callBack); };
+        var results = []
+        var list = fs.readdirSync(dir)
+        list.forEach(function (file) {
+            file = dir + '\\' + file;
+            var stat = fs.statSync(file)
+            if (stat && stat.isDirectory())
+                results = results.concat(func(file));
+            else {
+               var isValid = !callBack || callBack(file);
+                if (isValid)
+                    results.push(file);
             }
-        }
+        })
+        return results;
+    }
+
+    findSln(path) {
+        var files = this.walk(this.fs, path, (fileName) => {
+            return this._path.extname(fileName) === ".sln";
+        });
+        if (files.length > 0)
+            return files[0];
     }
 
     convertToVB() {
@@ -49,7 +65,6 @@ class TicketProcessor {
         var vbProjectPath = this.ensurePath(this._path.join(ticketPath, "VB"));
         var files = this.fs.readdirSync(ticketPath);
         var slnFile = this.findSln(ticketPath);
-        slnFile = this._path.join(ticketPath, slnFile);
         if (slnFile) {
             var vbConverterPath = this.appConfig.getVBConverterPath(slnFile, vbProjectPath);
             this.exec(vbConverterPath, {

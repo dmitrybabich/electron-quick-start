@@ -5,7 +5,11 @@ class Downloader {
         return url.match(new RegExp("(?:.+)//isc.devexpress.com/Attachment/GetAttachment\\?fileOid=(.+)\&fileName=(.+)"));
     }
 
-
+    patchName(name) {
+        const default_char = "_";
+        name = name.replace(/[\s%-)(]/g, '_');
+        return name;
+    }
 
     registerWindow(win) {
         var downloader = this;
@@ -17,11 +21,15 @@ class Downloader {
             if (!matches)
                 return;
             var attachmentId = matches[1];
-            var attachmentName = matches[2];
+            var attachmentName = downloader.patchName(matches[2]);
             var processor = new TicketProcessor(ticketID);
             var path = processor.getAttachmentPath(attachmentId, attachmentName);
             var openFileAction = () => {
-                processor.exec(path);
+                processor.exec(path, (error, stdout, stderr) => {
+                    if (error) {
+                        
+                    }
+                });
             }
             if (processor.fs.existsSync(path)) {
                 openFileAction();

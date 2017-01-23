@@ -8,6 +8,8 @@ class IscTabs {
         var self = this;
         var matches = url.match(new RegExp("(?:.+)//isc.devexpress.com/Thread/WorkplaceDetails\\?id=(.+)"));
         if (!matches)
+        matches = url.match(new RegExp("(?:.+)//isc.devexpress.com/Thread/WorkplaceDetails/(.+)"));
+        if (!matches)
             return;
         var id = matches.length == 2 ? matches[1] : null;
         if (!id)

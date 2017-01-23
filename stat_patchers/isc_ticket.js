@@ -64,7 +64,7 @@ var appendCustomButton = function (rootContainer, iconName, actionName, title) {
 };
 
 var patchLinks = function () {
-    $("a").attr("_target", "blank");
+    $("a").attr("target", "_blank");
 }
 
 var appendCustomButtons = function () {
@@ -89,7 +89,7 @@ var func = () => {
     $("#main-container").css("top", "0px");
     setTimeout(() => {
         setTimeout(function () {
-
+            patchLinks();
         }, 1000);
         var cssUri = "https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900&subset=cyrillic";
         appendcss(cssUri);
@@ -104,7 +104,7 @@ var func = () => {
         $("h4").css("font-size", "18px");
         $("h4").css("font-weight", "400");
         appendCustomButtons();
-        patchLinks();
+
     }, 2000);
 
 
@@ -315,11 +315,53 @@ document.addEventListener("DOMContentLoaded", () => {
             };
         };
 
+        self.PrevAssigneeHelper = new function () {
+            var self = this;
+            self.onLinkClick = function (id) {
+                fullViewModel.issueDetails.selectedAssignTo.value.currentValue(id);
+            };
+            self.createAssigneeButton = function (cell, id, name) {
+                var link = $("<a href='#'></a>");
+                link.text(name);
+                link.css('font-size', '10px');
+                link.css('display', 'block');
+                link.css('color', 'black');
+                link.click(function (e) {
+                    e.preventDefault();
+                    self.onLinkClick(id);
+                });
+                cell.append(link);
+            };
+            self.run = function () {
+                var owners = ThreadChangedItems.map(x => x.Owner);
+                owners = owners.filter(x => x.Email.endsWith("devexpress.com"));
+                var onwerInfos = {};
+                owners.forEach(function (item) {
+                    onwerInfos[item.Oid] = item.FullName;
+                });
+                var currentOwner = fullViewModel.issueDetails.selectedAssignTo.value.currentValue();
+                var $checkbox = $("#checkbox-CheckedByCorrector");
+                var $parent = $checkbox.closest(".sidebar-details-row");
+                var $assigneeCol = $('<div class="sidebar-details-col-left"></div>')
+                var $assigneeCell = $('<div class="sidebar-details-col-cell"></div>');
+                $assigneeCol.append($assigneeCell);
+                $parent.append($assigneeCol);
+                var keys = [];
+                for (var key in onwerInfos) {
+                    if (onwerInfos.hasOwnProperty(key)) {
+                        if (key !== currentOwner)
+                            self.createAssigneeButton($assigneeCell, key, onwerInfos[key]);
+                    }
+                }
+            };
+        };
+
         //========START==========
         self.run = function () {
             setTimeout(function () {
                 self.SelectedIDEHelper.run();
                 self.ActiveEditorHelper.run();
+                self.PrevAssigneeHelper.run();
             }, 5000);
         }
     }

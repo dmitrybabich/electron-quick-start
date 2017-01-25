@@ -56,6 +56,7 @@ class FixedTabsHelper {
         const appConfig = require("./app_config.js");
         this.tabGroup = tabGroup;
         this.addFixedTab({ title: "S", src: statApi.getRepliesUrl(), disablePatchers: true });
+        this.addFixedTab({ title: "T", src: statApi.getMyTeamSituatioUrl(appConfig.teamName), disablePatchers: true });
         this.addFixedTab({ title: "FL", src: statApi.getFirstLevelUri(appConfig.teamName), active: true }, statApi.getFirstLevelTicketCountUri(appConfig.teamName));
         this.addFixedTab({ title: "SL", src: statApi.getSecondLevelUri(appConfig.teamName) }, statApi.getSecondLevelTicketCountUri(appConfig.teamName));
         this.addFixedTab({ title: "ME", src: statApi.getMeUri(appConfig.userId, appConfig.teamName) }, statApi.getMeTicketCountUri(appConfig.userId, appConfig.teamName));

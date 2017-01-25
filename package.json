@@ -26,6 +26,7 @@
   "dependencies": {
     "combokeys": "2.4.6",
     "dragula": "^3.7.2",
+    "electron-context-menu": "^0.8.0",
     "electron-dl": "^1.6.0",
     "electron-download-manager": "^1.1.0",
     "electron-tabs": "^0.4.2",

@@ -1,3 +1,6 @@
+var electron = require('electron');
+var shell = electron.shell;
+
 class IscTabs {
 
     subscribe(action) {
@@ -8,7 +11,7 @@ class IscTabs {
         var self = this;
         var matches = url.match(new RegExp("(?:.+)//isc.devexpress.com/Thread/WorkplaceDetails\\?id=(.+)"));
         if (!matches)
-        matches = url.match(new RegExp("(?:.+)//isc.devexpress.com/Thread/WorkplaceDetails/(.+)"));
+            matches = url.match(new RegExp("(?:.+)//isc.devexpress.com/Thread/WorkplaceDetails/(.+)"));
         if (!matches)
             return;
         var id = matches.length == 2 ? matches[1] : null;
@@ -47,7 +50,23 @@ class IscTabs {
         var self = this;
         var func = () => {
             var webView = tabItem.webview;
-            //webView.openDevTools();
+            var contextMenu = require('electron-context-menu');
+            contextMenu({
+                window: webView,
+                prepend: (params, browserWindow) => {
+                    var selectedText = params.selectionText;
+                    if (!selectedText)
+                        return;
+                    var uri = "https://search.devexpress.com/?q=" + selectedText;
+                    return [{
+                        label: 'Search text',
+                        click: () => { shell.openExternal(uri) },
+                        visible: true
+                    }];
+                }
+            });
+
+
             webView.addEventListener('ipc-message', function (event) {
                 var action = event.channel;
                 self.processAction(action, tabItem.ticketId, webView, event.args, tabItem);

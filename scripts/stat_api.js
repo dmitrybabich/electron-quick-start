@@ -21,6 +21,12 @@ class StatApi {
 
 
 
+    getMyTeamSituatioUrl(teamName) {
+        return `https://internal.devexpress.com/supportstat/MyTeam?teamName=${teamName}`;
+    }
+
+
+
     getMeUri(id, teamName) {
         return `https://internal.devexpress.com/supportstat/TicketList?AssigneeGuid=${id}&SupportTeam=${teamName}&TicketStatus=AFS`;
     }

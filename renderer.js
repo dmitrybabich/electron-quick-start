@@ -14,6 +14,8 @@ var ipcRenderer = electron.ipcRenderer;
 var shell = electron.shell;
 const clipboard = electron.clipboard;
 
+
+
 shortcuts.bind('ctrl+shift+d', function () {
     snackbar.showText("DevTools");
     var tab = tabGroup.getActiveTab();
@@ -65,6 +67,9 @@ tabGroup.on("tab-active", (tab, tabGroup) => {
 
 tabGroup.on("tab-added", (tab, tg) => {
     let webview = tab.webview;
+
+
+
     var func = (url) => {
         var downloadMatches = downloader.checkDonwloadLink(url);
         if (downloadMatches)
@@ -85,10 +90,9 @@ tabGroup.on("tab-added", (tab, tg) => {
     // });
     tab.tab.setAttribute("style", "-webkit-app-region: no-drag;");
 });
+//iscTabs.checkNeedOpen(tabGroup, "https://isc.devexpress.com/Thread/WorkplaceDetails?id=T474483");
 
-iscTabs.checkNeedOpen(tabGroup, "https://isc.devexpress.com/Thread/WorkplaceDetails?id=T474483");
-
-//fixedTabs.init(tabGroup);
+fixedTabs.init(tabGroup);
 
 
 var tabGroupElement = document.getElementsByClassName('etabs-tabgroup');

@@ -56,7 +56,7 @@ class IscTabs {
                 prepend: (params, browserWindow) => {
                     var selectedText = params.selectionText;
                     if (!selectedText)
-                        return;
+                        return [];
                     var uri = "https://search.devexpress.com/?q=" + selectedText;
                     return [{
                         label: 'Search text',

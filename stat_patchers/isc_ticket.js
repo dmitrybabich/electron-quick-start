@@ -271,6 +271,8 @@ document.addEventListener("DOMContentLoaded", () => {
             self.getFocusedWord = function () {
                 var sel = tinymce.activeEditor.selection.getSel();
                 var value = sel.focusNode.data;
+                if (!value)
+                    return null;
                 var caretEnd = sel.focusOffset;
                 var lastIndex = value.indexOf(' ', caretEnd);
                 if (lastIndex == -1)
@@ -317,6 +319,16 @@ document.addEventListener("DOMContentLoaded", () => {
             };
         };
 
+        self.CheckerHelper = new function () {
+            var self = this;
+            self.run = function () {
+                var btn = $(".postchecker > #btn");
+                btn.click(() => {
+                    ipcRenderer.sendToHost("check-button-click");
+                });
+            };
+        };
+
         self.PrevAssigneeHelper = new function () {
             var self = this;
             self.onLinkClick = function (id) {
@@ -335,7 +347,16 @@ document.addEventListener("DOMContentLoaded", () => {
                 cell.append(link);
             };
             self.run = function () {
-                var owners = ThreadChangedItems.map(x => x.Owner);
+
+                var owners = [];
+                ThreadChangedItems.forEach(function (item) {
+                    owners.push(item.Owner);
+                    if (item.Comments) {
+                        item.Comments.forEach(function (cItem) {
+                            owners.push(cItem.Owner);
+                        });
+                    }
+                });
                 owners = owners.filter(x => x.Email.endsWith("devexpress.com"));
                 var onwerInfos = {};
                 owners.forEach(function (item) {
@@ -364,6 +385,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 self.SelectedIDEHelper.run();
                 self.ActiveEditorHelper.run();
                 self.PrevAssigneeHelper.run();
+                self.CheckerHelper.run();
             }, 5000);
         }
     }

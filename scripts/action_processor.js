@@ -44,7 +44,7 @@ class TicketProcessor {
             if (stat && stat.isDirectory())
                 results = results.concat(func(file));
             else {
-               var isValid = !callBack || callBack(file);
+                var isValid = !callBack || callBack(file);
                 if (isValid)
                     results.push(file);
             }
@@ -156,24 +156,70 @@ class TicketProcessor {
 
 class ActionProcessor {
 
-    constructor() {
 
+    constructor() {
+        this.icons = ["draft-icon", "check-icon"];
+        this.iconValues = ["*", "✓"]
+    }
+
+    checkCreateIcons(tabElement) {
+        if (tabElement.iconsCreated)
+            return;
+        tabElement.iconsCreated = true;
+        var firstElement = tabElement.childNodes[0]
+        for (var i = this.icons.length - 1; i >= 0; i--) {
+            let icon = document.createElement("span");
+            let iconName = this.icons[i];
+            icon.className = iconName;
+            tabElement.insertBefore(icon, firstElement);
+            tabElement[iconName] = { dom: icon, value: this.iconValues[i] };
+        }
+    }
+    setIconState(tabItem, iconName, enabled) {
+        var tabElement = tabItem.tab;
+        this.checkCreateIcons(tabElement);
+        var el = tabElement[iconName];
+        el.dom.innerText = enabled ? el.value : '';
     }
 
     updateDraftState(tabItem, data) {
-        var isDraft = data[0];
-        const CLASS_NAME = "draft-icon";
-        var tabElement = tabItem.tab;
-        var firstElement = tabElement.childNodes[0];
-        var isIcon = firstElement.className === CLASS_NAME;
-        var el = firstElement;
-        if (!isIcon) {
-            el = document.createElement("span");
-            el.className = CLASS_NAME;
-            tabElement.insertBefore(el, firstElement);
-        }
-        el.innerText = isDraft ? '*' : '';
+        this.setIconState(tabItem, "draft-icon", data[0]);
     }
+
+    updateCheckState(tabItem) {
+        this.setIconState(tabItem, "check-icon", true);
+    }
+
+
+
+    // updateDraftState(tabItem, data) {
+
+    //     const CLASS_NAME = "draft-icon";
+    //     var tabElement = tabItem.tab;
+    //     var draftIcon = tabElement.draftIcon;
+    //     if (!draftIcon) {
+    //         var firstElement = tabElement.childNodes[0];
+    //         draftIcon = document.createElement("span");
+    //         draftIcon.className = CLASS_NAME;
+    //         tabElement.insertBefore(el, firstElement);
+    //         tabElement.draftIcon = draftIcon;
+    //     }
+    //     draftIcon.innerText = isDraft ? '*' : '';
+    // }
+
+    // updateCheckState(tabItem, data) {
+    //     const CLASS_NAME = "check-icon";
+    //     var tabElement = tabItem.tab;
+    //     var firstElement = tabElement.childNodes[0];
+    //     var isIcon = firstElement.className === CLASS_NAME;
+    //     var el = firstElement;
+    //     if (!isIcon) {
+    //         el = document.createElement("span");
+    //         el.className = CLASS_NAME;
+    //         tabElement.insertBefore(el, firstElement);
+    //     }
+    //     el.innerText = isDraft ? '*' : '';
+    // }
 
     processAction(actionName, ticketId, webview, data, tabItem) {
         if (!ticketId)
@@ -188,6 +234,7 @@ class ActionProcessor {
             case "create-image-link": tp.createImageLink(); break;
             case "convert-project": tp.convertToVB(); break;
             case "update-draft-state": this.updateDraftState(tabItem, data); break;
+            case "check-button-click": this.updateCheckState(tabItem, data); break;
         }
     }
 

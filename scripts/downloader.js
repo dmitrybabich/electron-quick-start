@@ -1,4 +1,4 @@
-const {TicketProcessor} = require("./action_processor.js");
+const {TicketProcessor, actionProcessor} = require("./action_processor.js");
 
 class Downloader {
     checkDonwloadLink(url) {
@@ -25,6 +25,7 @@ class Downloader {
             var processor = new TicketProcessor(ticketID);
             var path = processor.getAttachmentPath(attachmentId, attachmentName);
             var openFileAction = () => {
+                actionProcessor.processAction("open-folder", ticketID);
                 processor.exec(path, (error, stdout, stderr) => {
                     if (error) {
                         

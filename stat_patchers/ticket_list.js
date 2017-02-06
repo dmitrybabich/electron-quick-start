@@ -2,9 +2,14 @@ const {ipcRenderer} = require('electron');
 
 window.getJSON = function (uri) {
     var func = () => {
-        $.getJSON(uri, function (json) {
-            ipcRenderer.sendToHost(json);
-        });
+        try {
+            $.getJSON(uri, function (json) {   
+                ipcRenderer.sendToHost(json);
+            });
+        }
+        catch (exc) {
+
+        }
     };
     if (!window.jQuery)
         document.addEventListener("DOMContentLoaded", func);
@@ -14,6 +19,7 @@ window.getJSON = function (uri) {
 
 
 document.addEventListener("DOMContentLoaded", function (event) {
+    remove;
     $(".mdl-layout__header").remove();
     $("#top-bar").remove();
     $("#replies-list").removeClass("padding10");

@@ -10,7 +10,10 @@ var spellChecker = require('spellchecker');
 
 webFrame.setSpellCheckProvider("en-US", true, {
     spellCheck: function (text) {
-        return !(spellChecker.isMisspelled(text));
+        var result = !(spellChecker.isMisspelled(text));
+        if (!result)
+            console.log(text);
+        return result;
     }
 });
 
@@ -85,6 +88,7 @@ var appendCustomButtons = function () {
 }
 
 var func = () => {
+
     appendTextScript("stat_patchers/checker.js");
     appendTextScript("stat_patchers/cat.js");
     $("#top-panel").css("top", "-40px");
@@ -118,8 +122,22 @@ document.addEventListener("DOMContentLoaded", func);
 
 
 document.addEventListener("DOMContentLoaded", () => {
+
+
+
     var iscTools = function () {
         var self = this;
+
+
+        self.ResetAssignToHelper = new function () {
+            var self = this;
+            self.resetAssignTo = function () {
+                fullViewModel.issueDetails.selectedAssignTo.value.currentValue("");
+            };
+            self.run = function () {
+                fullViewModel.issueDetails.selectedProduct.value.currentValue.subscribe(self.resetAssignTo);
+            };
+        };
         self.SelectedIDEHelper = new function () {
             var self = this;
             self.run = function () {
@@ -140,7 +158,7 @@ document.addEventListener("DOMContentLoaded", () => {
             var self = this;
             self.createButton = function (text, clickFunc) {
                 var $btn = $("<a></a>");
-                $btn.text(text);
+                $btn.html(text);
                 $btn.attr('href', '#');
                 $btn.css('padding', '5px');
                 $btn.css('margin', '5px 5px 5px 0px');
@@ -179,7 +197,7 @@ document.addEventListener("DOMContentLoaded", () => {
             self.updateSuggestions = function (editor) {
                 setTimeout(() => {
                     self.updateSuggestionsCore(editor);
-                }, 1000);
+                }, 100);
             }
             self.updateSuggestionsCore = function (editor) {
                 if (!editor)
@@ -188,7 +206,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 $suggestionContainer.empty();
                 var currentWords = self.getFocusedWord();
                 var currentWord = null;
-                if (currentWords.length == 1)
+                if (currentWords && currentWords.length == 1)
                     currentWord = currentWords[0];
                 if (!currentWord)
                     return;
@@ -200,7 +218,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     var button = self.createSuggestionButton(editor, currentWord, s);
                     $suggestionContainer.append(button);
                 });
-                var button = self.createButton("Add" + currentWord + " to dictionary", function () {
+                var button = self.createButton("Add <span class='mdl-color-text--indigo-600'>" + currentWord + "</span> to dictionary", function () {
                     spellChecker.add(currentWord);
                 });
                 $suggestionContainer.append(button);
@@ -386,6 +404,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 self.ActiveEditorHelper.run();
                 self.PrevAssigneeHelper.run();
                 self.CheckerHelper.run();
+                self.ResetAssignToHelper.run();
             }, 5000);
         }
     }

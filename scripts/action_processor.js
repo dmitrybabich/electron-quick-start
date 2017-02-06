@@ -147,6 +147,10 @@ class TicketProcessor {
         this.exec = require('child_process').exec;
         this.fs = require('fs');
         this.ticketId = ticketId;
+        this.ensurePath(this.appConfig.projectDirectory);
+        this.ensurePath(this.appConfig.zipProjectDirectory);
+        this.ensurePath(this.appConfig.mediaPath);
+        this.ensurePath(this.appConfig.attachmentPath);
         this.projectPath = this.ensurePath(this.getTicketProjectPath(ticketId));
         this.zipPath = this.ensurePath(this.getZipProjectPath(ticketId));
         this.mediaPath = this.ensurePath(this._path.join(this.appConfig.mediaPath, this.ticketId));

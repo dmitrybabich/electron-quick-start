@@ -2,7 +2,7 @@ class FixedTabsHelper {
     addFixedTab(customProps, ticketCountUri) {
         var props = {
             webviewAttributes: {
-                preload:  customProps.disablePatchers? undefined : './stat_patchers/ticket_list.js',
+                preload: customProps.disablePatchers ? undefined : './stat_patchers/ticket_list.js',
             },
             visible: true,
             closable: false,
@@ -11,7 +11,7 @@ class FixedTabsHelper {
             }
         }
         for (var prop in customProps) props[prop] = customProps[prop];
-        
+
         var tab = this.tabGroup.addTab(props);
     };
 
@@ -29,7 +29,7 @@ class FixedTabsHelper {
         var counter = this.addCounter(tab, 'total');
         var atCounter = this.addCounter(tab, 'at');
         var func = () => {
-            wv.executeJavaScript(`window.getJSON("${uri}");`);
+            wv.executeJavaScript(`try{window.getJSON('${uri}');}catch(ex){}`);
         };
         wv.addEventListener('dom-ready', () => {
             wv.addEventListener('ipc-message', function (event) {
@@ -57,9 +57,9 @@ class FixedTabsHelper {
         this.tabGroup = tabGroup;
         this.addFixedTab({ title: "S", src: statApi.getRepliesUrl(), disablePatchers: true });
         this.addFixedTab({ title: "T", src: statApi.getMyTeamSituatioUrl(appConfig.teamName), disablePatchers: true });
-        this.addFixedTab({ title: "FL", src: statApi.getFirstLevelUri(appConfig.teamName), active: true }, statApi.getFirstLevelTicketCountUri(appConfig.teamName));
-        this.addFixedTab({ title: "SL", src: statApi.getSecondLevelUri(appConfig.teamName) }, statApi.getSecondLevelTicketCountUri(appConfig.teamName));
-        this.addFixedTab({ title: "ME", src: statApi.getMeUri(appConfig.userId, appConfig.teamName) }, statApi.getMeTicketCountUri(appConfig.userId, appConfig.teamName));
+        this.addFixedTab({ title: "FL", src: statApi.getFirstLevelUri(appConfig.teamId), active: true }, statApi.getFirstLevelTicketCountUri(appConfig.teamId));
+        this.addFixedTab({ title: "SL", src: statApi.getSecondLevelUri(appConfig.teamId) }, statApi.getSecondLevelTicketCountUri(appConfig.teamId));
+        this.addFixedTab({ title: "ME", src: statApi.getMeUri(appConfig.userId, appConfig.teamId) }, statApi.getMeTicketCountUri(appConfig.userId, appConfig.teamId));
 
     }
 }

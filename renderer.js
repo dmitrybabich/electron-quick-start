@@ -3,6 +3,7 @@ const TabGroup = require("electron-tabs");
 const filesystem = require('fs');
 const fixedTabs = require("./scripts/fixed_tabs.js");
 const iscTabs = require("./scripts/isc_tabs.js");
+
 const downloader = require("./scripts/downloader.js");
 const {actionProcessor} = require("./scripts/action_processor.js");
 const path = require('path');
@@ -54,7 +55,6 @@ registerISCActionShortcut('ctrl+shift+z', "ZIP Project", "archive-project");
 iscTabs.subscribe((actionName, ticketId, webview, data, tabItem) => {
     actionProcessor.processAction(actionName, ticketId, webview, data, tabItem);
 });
-var ticketCss = filesystem.readFileSync("./stat_patchers/isc_ticket.css");
 
 var tabGroup = new TabGroup();
 
@@ -75,7 +75,9 @@ tabGroup.on("tab-added", (tab, tg) => {
         if (downloadMatches)
             webview.getWebContents().downloadURL(url);
         else {
-            if (!iscTabs.checkNeedOpen(tabGroup, url)) {
+            var isOpened = iscTabs.checkNeedOpen(tabGroup, url);
+            
+            if (!isOpened) {
                 shell.openExternal(url);
             }
         }
@@ -90,9 +92,16 @@ tabGroup.on("tab-added", (tab, tg) => {
     // });
     tab.tab.setAttribute("style", "-webkit-app-region: no-drag;");
 });
-//iscTabs.checkNeedOpen(tabGroup, "https://isc.devexpress.com/Thread/WorkplaceDetails?id=T416406");
 
-fixedTabs.init(tabGroup);
+const isDev = require('electron-is-dev');
+if (isDev) {
+  //  iscTabs.checkNeedOpen(tabGroup, "https://isc.devexpress.com/Thread/WorkplaceDetails?id=T416406");
+    // iscTabs.checkNeedOpen(tabGroup, "https://isc.devexpress.com/ContactBase/Details?userOid=d3377813-6dae-40ea-83d8-8b291e5bfbc8");
+      fixedTabs.init(tabGroup);
+}
+else {
+    fixedTabs.init(tabGroup);
+}
 
 
 var tabGroupElement = document.getElementsByClassName('etabs-tabgroup');
@@ -105,3 +114,4 @@ shortcuts.bind('alt+shift+q', function () {
         iscTabs.checkNeedOpen(tabGroup, "https://isc.devexpress.com/Thread/WorkplaceDetails?id=" + ticketID);
     }
 });
+

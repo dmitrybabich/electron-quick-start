@@ -9,8 +9,14 @@ class SnackBar {
         //   actionHandler: handler,
         //   actionText: 'Undo'
         // };
-        var snackbarContainer = document.querySelector('#snackbar');
-        snackbarContainer.MaterialSnackbar.showSnackbar(data);
+        try {
+            var snackbarContainer = window.document.querySelector('#snackbar');
+            snackbarContainer.MaterialSnackbar.showSnackbar(data);
+        }
+        catch (exc) {
+
+        }
+
     }
 }
 

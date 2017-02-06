@@ -7,13 +7,26 @@ class IscTabs {
         this.processAction = action;
     }
 
+    getMatches(url) {
+        var regExps = [
+            { url: "(?:.+)//isc.devexpress.com/Thread/WorkplaceDetails\\?id=(.+)", type: 'Ticket' },
+            { url: "(?:.+)//isc.devexpress.com/Thread/WorkplaceDetails/(.+)", type: 'Ticket' },
+            { url: "(?:.+)//isc.devexpress.com/ContactBase/Details\\?userOid=(.+)", type: 'User' }
+        ];
+        for (var i = 0; i < regExps.length; i++) {
+            var regExp = new RegExp(regExps[i].url);
+            var matches = url.match(regExp);
+            if (matches)
+                return { matches: matches, type: regExps[i].type };
+        }
+    }
+
     checkNeedOpen(tabGroup, url) {
         var self = this;
-        var matches = url.match(new RegExp("(?:.+)//isc.devexpress.com/Thread/WorkplaceDetails\\?id=(.+)"));
-        if (!matches)
-            matches = url.match(new RegExp("(?:.+)//isc.devexpress.com/Thread/WorkplaceDetails/(.+)"));
-        if (!matches)
+        var regMatches = this.getMatches(url);
+        if (!regMatches)
             return;
+        var matches = regMatches.matches;
         var id = matches.length == 2 ? matches[1] : null;
         if (!id)
             return;
@@ -22,10 +35,11 @@ class IscTabs {
             existingTab.activate();
         }
         else {
+            var preloadFileName = regMatches.type === "Ticket" ? './stat_patchers/isc_ticket.js' : './stat_patchers/isc_user.js';
             var tab = tabGroup.addTab({
                 title: id,
                 webviewAttributes: {
-                    preload: './stat_patchers/isc_ticket.js'
+                    preload: preloadFileName
                 },
                 src: url,
                 visible: true,

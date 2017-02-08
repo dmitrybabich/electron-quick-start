@@ -3,6 +3,8 @@ class FixedTabsHelper {
         var props = {
             webviewAttributes: {
                 preload: customProps.disablePatchers ? undefined : './stat_patchers/ticket_list.js',
+                    // partition : "persist:stat",
+                    plugins: true,
             },
             visible: true,
             closable: false,

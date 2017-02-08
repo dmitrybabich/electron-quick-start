@@ -39,7 +39,9 @@ class IscTabs {
             var tab = tabGroup.addTab({
                 title: id,
                 webviewAttributes: {
-                    preload: preloadFileName
+                    preload: preloadFileName,
+                    plugins: true,
+                // partition : "persist:stat",
                 },
                 src: url,
                 visible: true,

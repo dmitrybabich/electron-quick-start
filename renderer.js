@@ -17,6 +17,7 @@ const clipboard = electron.clipboard;
 
 
 
+
 shortcuts.bind('ctrl+shift+d', function () {
     snackbar.showText("DevTools");
     var tab = tabGroup.getActiveTab();
@@ -76,7 +77,7 @@ tabGroup.on("tab-added", (tab, tg) => {
             webview.getWebContents().downloadURL(url);
         else {
             var isOpened = iscTabs.checkNeedOpen(tabGroup, url);
-            
+
             if (!isOpened) {
                 shell.openExternal(url);
             }
@@ -95,9 +96,9 @@ tabGroup.on("tab-added", (tab, tg) => {
 
 const isDev = require('electron-is-dev');
 if (isDev) {
-  //  iscTabs.checkNeedOpen(tabGroup, "https://isc.devexpress.com/Thread/WorkplaceDetails?id=T416406");
-    // iscTabs.checkNeedOpen(tabGroup, "https://isc.devexpress.com/ContactBase/Details?userOid=d3377813-6dae-40ea-83d8-8b291e5bfbc8");
-      fixedTabs.init(tabGroup);
+    //  iscTabs.checkNeedOpen(tabGroup, "https://isc.devexpress.com/Thread/WorkplaceDetails?id=T416406");
+    //iscTabs.checkNeedOpen(tabGroup, "https://isc.devexpress.com/ContactBase/Details?userOid=d3377813-6dae-40ea-83d8-8b291e5bfbc8");
+    fixedTabs.init(tabGroup);
 }
 else {
     fixedTabs.init(tabGroup);
@@ -115,3 +116,9 @@ shortcuts.bind('alt+shift+q', function () {
     }
 });
 
+
+ipcRenderer.on('activated', function (event, data) {
+   var tab = tabGroup.getActiveTab() ;
+   var vw = tab.webview;
+   vw.focus();
+});

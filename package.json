@@ -6,7 +6,7 @@
   "main": "main.js",
   "scripts": {
     "start": "electron .",
-    "package-win": "electron-packager . --overwrite --asar=true --icon=assets/icons/win/icon.ico --prune=true --out=release-builds --version-string.CompanyName=CE --version-string.FileDescription=CE --version-string.ProductName=\"ISC Tools App\""
+    "package-win": "electron-packager . --overwrite --asar=true   --arch=x64 --icon=icons/icon.ico --prune=true --out=release-builds --version-string.CompanyName=DmitryBabich --version-string.FileDescription=ISC_TOOLS --version-string.ProductName=\"ISC Tools App\""
   },
   "repository": "https://github.com/electron/electron-quick-start",
   "keywords": [
@@ -19,9 +19,12 @@
   "author": "GitHub",
   "license": "CC0-1.0",
   "devDependencies": {
-    "electron": "^1.4.13",
+    "electron": "^1.4.15",
     "electron-packager": "^8.5.0",
-    "electron-rebuild": "^1.5.7"
+    "electron-rebuild": "^1.5.7",
+    "electron-spellchecker": "^1.0.2",
+    "i": "^0.3.5",
+    "npm": "^4.2.0"
   },
   "dependencies": {
     "combokeys": "2.4.6",
@@ -35,6 +38,7 @@
     "request": "^2.79.0",
     "request-promise": "^4.1.1",
     "spawn-rx": "^2.0.8",
-    "spellchecker": "^3.3.1"
+    "spellchecker": "^3.3.1",
+    "electron-is-dev": "*"
   }
 }

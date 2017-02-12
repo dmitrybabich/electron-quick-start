@@ -12,15 +12,15 @@ const debugMode = require("./scripts/debug_mode");
 
 let mainWindow;
 function createWindow() {
-  mainWindow = new BrowserWindow({ width: 800, height: 600, frame: false });
-
+  mainWindow = new BrowserWindow({ width: 800, height: 600, frame: false, icon:'icons/icon.png' });
+  // mainWindow.openDevTools();
 
 
 
   // window.spellCheckHandler = new SpellCheckHandler();
   // window.spellCheckHandler.attachToInput();
 
-  // // Start off as US English, America #1 (lol) 
+  // // Start off as US English, America #1 (lol)
   // window.spellCheckHandler.switchLanguage('en-US');
 
   // let contextMenuBuilder = new ContextMenuBuilder(window.spellCheckHandler);

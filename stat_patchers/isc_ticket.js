@@ -5,6 +5,7 @@ const fs = require('fs');
 
 
 
+
 var webFrame = require('electron').webFrame
 var spellChecker = require('spellchecker');
 

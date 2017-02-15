@@ -15,6 +15,7 @@ var ipcRenderer = electron.ipcRenderer;
 var shell = electron.shell;
 const clipboard = electron.clipboard;
 
+const searchInPage = require('electron-in-page-search').default;
 
 
 
@@ -25,6 +26,12 @@ shortcuts.bind('ctrl+shift+d', function () {
     vw.openDevTools();
 });
 
+shortcuts.bind('ctrl+f', function () {
+    snackbar.showText("Search");
+    var tab = tabGroup.getActiveTab();
+    var vw = tab.webview;
+     vw.search.openSearchWindow();
+});
 
 shortcuts.bind('ctrl+shift+r', function () {
     snackbar.showText("Reload");
@@ -59,8 +66,14 @@ iscTabs.subscribe((actionName, ticketId, webview, data, tabItem) => {
 
 var tabGroup = new TabGroup();
 
+
+
+var prevTab = null;
 tabGroup.on("tab-removed", (tab, tabGroup) => { tab.ticketId = null; });
 tabGroup.on("tab-active", (tab, tabGroup) => {
+    if (prevTab)
+    prevTab.webview.search.closeSearchWindow();
+    prevTab = tab;
     setTimeout(function () {
         ipcRenderer.send('active-tab-changed', tab.ticketId);
     }, 1000);
@@ -68,9 +81,8 @@ tabGroup.on("tab-active", (tab, tabGroup) => {
 
 tabGroup.on("tab-added", (tab, tg) => {
     let webview = tab.webview;
-
-
-
+    const searchInWebview = searchInPage(webview);
+    webview.search = searchInWebview;
     var func = (url) => {
         var downloadMatches = downloader.checkDonwloadLink(url);
         if (downloadMatches)
@@ -96,9 +108,23 @@ tabGroup.on("tab-added", (tab, tg) => {
 
 const isDev = require('electron-is-dev');
 if (isDev) {
-      iscTabs.checkNeedOpen(tabGroup, "https://isc.devexpress.com/Thread/WorkplaceDetails?id=T416406");
+
+    // var uri = 'https://internal.devexpress.com/supportstat/TicketList?Date=&Teams=[{%22ID%22:%229a5630d0-2282-11e2-8364-c44619bb1483%22}]&TicketStatus=AFS&Users=[{%22ID%22:%2200000000-0000-0000-0000-000000000000%22}]';
+    // var tab = tabGroup.addTab({
+    //     title: 'test',
+    //     webviewAttributes: {
+    //         plugins: true,
+    //         // partition : "persist:stat",
+    //     },
+    //     src: uri,
+    //     visible: true,
+    //     active: true,
+    //     closable: true,
+
+    // });
+     iscTabs.checkNeedOpen(tabGroup, "https://isc.devexpress.com/Thread/WorkplaceDetails?id=T416406");
     //iscTabs.checkNeedOpen(tabGroup, "https://isc.devexpress.com/ContactBase/Details?userOid=d3377813-6dae-40ea-83d8-8b291e5bfbc8");
-    //fixedTabs.init(tabGroup);
+  //  fixedTabs.init(tabGroup);
 }
 else {
     fixedTabs.init(tabGroup);
@@ -118,7 +144,7 @@ shortcuts.bind('alt+shift+q', function () {
 
 
 ipcRenderer.on('activated', function (event, data) {
-   var tab = tabGroup.getActiveTab() ;
-   var vw = tab.webview;
-   vw.focus();
+    var tab = tabGroup.getActiveTab();
+    var vw = tab.webview;
+    vw.focus();
 });

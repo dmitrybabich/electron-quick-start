@@ -26,6 +26,7 @@ class Downloader {
             var path = processor.getAttachmentPath(attachmentId, attachmentName);
             var openFileAction = () => {
                 actionProcessor.processAction("open-folder", ticketID);
+                actionProcessor.processAction("copy-path", ticketID);
                 processor.exec(path, (error, stdout, stderr) => {
                     if (error) {
                         

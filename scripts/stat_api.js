@@ -1,6 +1,6 @@
 class StatApi {
     getFirstLevelUri(teamId) {
-        return `https://internal.devexpress.com/supportstat/TicketList?Date=&Teams=[{"ID":"${teamId}"}]&TicketStatus=AFS&Users=[{"ID":"00000000-0000-0000-0000-000000000000"}]`;
+        return `https://internal.devexpress.com/supportstat/TicketList/FullScreenList?Date=&Teams=[{"ID":"${teamId}"}]&TicketStatus=AFS&Users=[{"ID":"00000000-0000-0000-0000-000000000000"}]`;
     }
 
     getFirstLevelTicketCountUri(teamId) {
@@ -12,7 +12,7 @@ class StatApi {
     }
 
     getSecondLevelUri(teamId) {
-        return `https://internal.devexpress.com/supportstat/TicketList?Date=&Teams=[{"ID":"${teamId}"}]&TicketStatus=AFS&Users=[{"ID":"2f795f88-e3ef-4913-9fdb-66c1e7525766"}]`;
+        return `https://internal.devexpress.com/supportstat/TicketList/FullScreenList?Date=&Teams=[{"ID":"${teamId}"}]&TicketStatus=AFS&Users=[{"ID":"2f795f88-e3ef-4913-9fdb-66c1e7525766"}]`;
     }
 
     getSecondLevelTicketCountUri(teamId) {
@@ -28,7 +28,7 @@ class StatApi {
 
 
     getMeUri(id, teamId) {
-        return `https://internal.devexpress.com/supportstat/TicketList?Date=&IgnoreSupportTeam=True&Teams=[{"ID":"${teamId}"}]&TicketStatus=AFS&Users=[{"ID":"${id}"}]`;
+        return `https://internal.devexpress.com/supportstat/TicketList/FullScreenList?Date=&IgnoreSupportTeam=True&Teams=[{"ID":"${teamId}"}]&TicketStatus=AFS&Users=[{"ID":"${id}"}]`;
     }
 
     getMeTicketCountUri(id, teamId) {

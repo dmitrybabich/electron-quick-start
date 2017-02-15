@@ -1,6 +1,8 @@
 var electron = require('electron');
 var shell = electron.shell;
 
+var Datastore = require('nedb'), db = new Datastore({ filename: 'ticket_history.db', autoload: true });
+
 class IscTabs {
 
     subscribe(action) {
@@ -41,7 +43,7 @@ class IscTabs {
                 webviewAttributes: {
                     preload: preloadFileName,
                     plugins: true,
-                // partition : "persist:stat",
+                    // partition : "persist:stat",
                 },
                 src: url,
                 visible: true,
@@ -87,6 +89,22 @@ class IscTabs {
                 var action = event.channel;
                 self.processAction(action, tabItem.ticketId, webView, event.args, tabItem);
             });
+            webView.addEventListener("page-title-updated", function (event) {
+                var newTitle = webView.getTitle();
+                var url = webView.getURL();
+var id = tabItem.ticketId;
+                var doc = {
+                    date: new Date(), title: newTitle, url: url, ticketId: id
+                };
+
+                db.insert(doc, function (err, newDoc) {
+                    console.log(newDoc);   // Callback is optional
+                    // newDoc is the newly inserted document, including its _id
+                    // newDoc has no key called notToBeSaved since its value was undefined
+                });
+
+            });
+
         };
         setTimeout(func, 500);
     }

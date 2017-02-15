@@ -2,9 +2,8 @@ class FixedTabsHelper {
     addFixedTab(customProps, ticketCountUri) {
         var props = {
             webviewAttributes: {
-                preload: customProps.disablePatchers ? undefined : './stat_patchers/ticket_list.js',
-                    // partition : "persist:stat",
-                    plugins: true,
+                // plugins: true,
+                // nodeIntegration: true,
             },
             visible: true,
             closable: false,
@@ -13,7 +12,10 @@ class FixedTabsHelper {
             }
         }
         for (var prop in customProps) props[prop] = customProps[prop];
-
+        if (!customProps.disablePatchers)
+            props.webviewAttributes.preload = './stat_patchers/ticket_list.js';
+        if (customProps.nodeIntegration)
+            props.webviewAttributes.nodeIntegration = true;
         var tab = this.tabGroup.addTab(props);
     };
 
@@ -59,6 +61,7 @@ class FixedTabsHelper {
         this.tabGroup = tabGroup;
         this.addFixedTab({ title: "S", src: statApi.getRepliesUrl(), disablePatchers: true });
         this.addFixedTab({ title: "T", src: statApi.getMyTeamSituatioUrl(appConfig.teamName), disablePatchers: true });
+        this.addFixedTab({ title: "H", src: "Views\\History\\Index.html", disablePatchers: true, nodeIntegration: true });
         this.addFixedTab({ title: "FL", src: statApi.getFirstLevelUri(appConfig.teamId), active: true }, statApi.getFirstLevelTicketCountUri(appConfig.teamId));
         this.addFixedTab({ title: "SL", src: statApi.getSecondLevelUri(appConfig.teamId) }, statApi.getSecondLevelTicketCountUri(appConfig.teamId));
         this.addFixedTab({ title: "ME", src: statApi.getMeUri(appConfig.userId, appConfig.teamId) }, statApi.getMeTicketCountUri(appConfig.userId, appConfig.teamId));

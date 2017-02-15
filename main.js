@@ -4,13 +4,14 @@ const BrowserWindow = electron.BrowserWindow
 const ipcMain = electron.ipcMain;
 const path = require('path')
 const url = require('url');
-const actionProcessor = require("./scripts/action_processor.js");
+
 const downloader = require("./scripts/downloader.js");
 const debugMode = require("./scripts/debug_mode");
 
 
 
 let mainWindow;
+
 function createWindow() {
   mainWindow = new BrowserWindow({ width: 800, height: 600, frame: false, icon:'icons/icon.png' });
   // mainWindow.openDevTools();

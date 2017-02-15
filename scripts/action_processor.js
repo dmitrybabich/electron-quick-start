@@ -128,6 +128,10 @@ class TicketProcessor {
         });
     }
 
+    ensurePaths() {
+
+    }
+
     getAttachmentPath(attachmentId, fileName) {
         var join = this._path.join;
         var savePath = this.ensurePath(join(this.appConfig.attachmentPath, attachmentId));
@@ -147,6 +151,7 @@ class TicketProcessor {
         this.exec = require('child_process').exec;
         this.fs = require('fs');
         this.ticketId = ticketId;
+        this.ensurePath(this.appConfig.rootISCPath);
         this.ensurePath(this.appConfig.projectDirectory);
         this.ensurePath(this.appConfig.zipProjectDirectory);
         this.ensurePath(this.appConfig.mediaPath);

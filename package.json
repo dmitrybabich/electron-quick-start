@@ -20,6 +20,7 @@
   "license": "CC0-1.0",
   "devDependencies": {
     "electron": "^1.4.15",
+    "electron-in-page-search": "^1.2.3",
     "electron-packager": "^8.5.0",
     "electron-rebuild": "^1.5.7",
     "electron-spellchecker": "^1.0.2",
@@ -32,13 +33,14 @@
     "electron-context-menu": "^0.8.0",
     "electron-dl": "^1.6.0",
     "electron-download-manager": "^1.1.0",
+    "electron-is-dev": "*",
     "electron-tabs": "^0.4.2",
     "knockout": "^3.4.1",
+    "nedb": "^1.8.0",
     "npm-cli": "^0.1.0",
     "request": "^2.79.0",
     "request-promise": "^4.1.1",
     "spawn-rx": "^2.0.8",
-    "spellchecker": "^3.3.1",
-    "electron-is-dev": "*"
+    "spellchecker": "^3.3.1"
   }
 }

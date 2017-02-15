@@ -173,24 +173,39 @@ document.addEventListener("DOMContentLoaded", () => {
                 });
                 return $btn;
             };
-            self.addGreeting = function (editor) {
+
+            self.getUserName = function () {
                 var fullName = fullViewModel.issueDetails.ticketOwner.publicName();
                 var name = fullName.split(' ')[0];
                 var firstLetter = name[0];
                 var remainingLetters = name.substring(1);
                 var finalName = firstLetter.toUpperCase() + remainingLetters.toLowerCase();
-                editor.insertContent('Hello ' + finalName + ',');
+                return finalName;
+            }
+
+            self.addGreeting = function (editor) {
+                editor.insertContent('Hello ' + self.getUserName() + ',');
                 editor.insertContent('<br>');
                 editor.insertContent('<br>');
+                editor.focus();
             };
+
+            self.addWelcome = function (editor) {
+                editor.insertContent('You are always welcome ' + self.getUserName() + '!');
+            };
+
+
+            self.addEditorButtonCore = function (name, func) {
+                return self.createButton(name, func);
+            }
             self.addEditorButtons = function (editor) {
                 var $buttonContainer = $("<div></div>")
                 var $cont = $(editor.editorContainer).parents(".control-group").first();
                 $cont.append($buttonContainer);
-                var $trimButton = self.createButton('Trim', function () { self.trimEditor(editor); });
-                $buttonContainer.append($trimButton);
-                var $helloButton = self.createButton('Hello', function () { self.addGreeting(editor); });
-                $buttonContainer.append($helloButton);
+                $buttonContainer.append(self.addEditorButtonCore('Full Screen', () => { self.validateEditorText(editor) }));
+                $buttonContainer.append(self.addEditorButtonCore('Trim', () => { self.trimEditor(editor) }));
+                $buttonContainer.append(self.addEditorButtonCore('Hello', () => { self.addGreeting(editor) }));
+                $buttonContainer.append(self.addEditorButtonCore('Welcome', () => { self.addWelcome(editor) }));
                 var $suggestionContainer = $("<div></div>");
                 $buttonContainer.append($suggestionContainer);
                 editor.suggCont = $suggestionContainer;
@@ -329,6 +344,11 @@ document.addEventListener("DOMContentLoaded", () => {
                     text = text.replace('<br /><br />', '<br />');
                 }
                 editor.setContent(text);
+            }
+
+            self.validateEditorText = function (editor) {
+                var text = editor.getContent();
+                ipcRenderer.sendToHost("full-screen-editor", text);
             }
 
             self.run = function () {

@@ -29,3 +29,44 @@
     color: green;
     font-weight: bold;
 }
+
+
+
+.electron-in-page-search-window {
+  width: 300px;
+  height: 36px;
+  background-color: white;
+  position: fixed;
+  right: 10px;
+  top: 0px;
+}
+
+
+.electron-in-page-search-window.search-inactive {
+  visibility: hidden;
+}
+ 
+.electron-in-page-search-window.search-active {
+  visibility: visible;
+}
+
+
+#full-screen-edit-container
+{
+    position: fixed;
+    left: 0px;
+    top: 0px;
+    right: 0px;
+    bottom: 0px;
+    z-index: 999999;
+    background:  rgba(100,100,100, 0.8);
+    display:  none;
+}
+
+#full-screen-edit
+{
+    
+    width: 90%;
+    height: 100%;
+    
+}

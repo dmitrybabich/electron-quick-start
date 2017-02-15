@@ -202,7 +202,13 @@ document.addEventListener("DOMContentLoaded", () => {
                 var $buttonContainer = $("<div></div>")
                 var $cont = $(editor.editorContainer).parents(".control-group").first();
                 $cont.append($buttonContainer);
-                $buttonContainer.append(self.addEditorButtonCore('Full Screen', () => { self.validateEditorText(editor) }));
+                var validateButton = self.addEditorButtonCore('Full Screen', () => { self.validateEditorText(editor) });
+                validateButton.css("color", " green");
+                validateButton.css("font-weight", " bold");
+                validateButton.css("float", " right");
+                validateButton.css("border-width", " 1px");
+                validateButton.css("border-color", " green");
+                $buttonContainer.append(validateButton);
                 $buttonContainer.append(self.addEditorButtonCore('Trim', () => { self.trimEditor(editor) }));
                 $buttonContainer.append(self.addEditorButtonCore('Hello', () => { self.addGreeting(editor) }));
                 $buttonContainer.append(self.addEditorButtonCore('Welcome', () => { self.addWelcome(editor) }));
@@ -347,7 +353,7 @@ document.addEventListener("DOMContentLoaded", () => {
             }
 
             self.validateEditorText = function (editor) {
-                var text = editor.getContent();
+                var text = editor.getContent({ format: 'text' });
                 ipcRenderer.sendToHost("full-screen-editor", text);
             }
 

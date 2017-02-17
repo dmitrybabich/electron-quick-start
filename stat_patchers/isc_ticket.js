@@ -139,6 +139,19 @@ document.addEventListener("DOMContentLoaded", () => {
                 fullViewModel.issueDetails.selectedProduct.value.currentValue.subscribe(self.resetAssignTo);
             };
         };
+
+        self.AttachmentHelper = new function () {
+            var self = this;
+            self.run = function () {
+                var lang = fullViewModel.issueDetails.ticketOwner.programmingLanguage();
+                var text = "Attachment";
+                if (!lang)
+                    lang = "?";
+                lang = '<span style="color:darkred;">' + lang + '</span>'
+                text += "- " + lang;
+                $("span:contains('Attachment')").html(text);
+            };
+        }
         self.SelectedIDEHelper = new function () {
             var self = this;
             self.run = function () {
@@ -209,7 +222,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 validateButton.css("border-width", " 1px");
                 validateButton.css("border-color", " green");
                 $buttonContainer.append(validateButton);
-               // $buttonContainer.append(self.addEditorButtonCore('Trim', () => { self.trimEditor(editor) }));
+                // $buttonContainer.append(self.addEditorButtonCore('Trim', () => { self.trimEditor(editor) }));
                 $buttonContainer.append(self.addEditorButtonCore('Hello', () => { self.addGreeting(editor) }));
                 $buttonContainer.append(self.addEditorButtonCore('Welcome', () => { self.addWelcome(editor) }));
                 var $suggestionContainer = $("<div></div>");
@@ -432,6 +445,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 self.PrevAssigneeHelper.run();
                 self.CheckerHelper.run();
                 self.ResetAssignToHelper.run();
+                self.AttachmentHelper.run();
             }, 5000);
         }
     }

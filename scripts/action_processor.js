@@ -139,6 +139,13 @@ class TicketProcessor {
         return savePath;
     }
 
+    openFullScrenEditor(text)
+    {
+        this.clipboard.writeHTML(text);
+        var path = this.appConfig.checkerPath;
+        this.exec(path);
+    }
+
     constructor(ticketId) {
         this.appConfig = require("./app_config.js");
         const {remote, clipboard} = require('electron');
@@ -201,34 +208,7 @@ class ActionProcessor {
 
 
 
-    // updateDraftState(tabItem, data) {
-
-    //     const CLASS_NAME = "draft-icon";
-    //     var tabElement = tabItem.tab;
-    //     var draftIcon = tabElement.draftIcon;
-    //     if (!draftIcon) {
-    //         var firstElement = tabElement.childNodes[0];
-    //         draftIcon = document.createElement("span");
-    //         draftIcon.className = CLASS_NAME;
-    //         tabElement.insertBefore(el, firstElement);
-    //         tabElement.draftIcon = draftIcon;
-    //     }
-    //     draftIcon.innerText = isDraft ? '*' : '';
-    // }
-
-    // updateCheckState(tabItem, data) {
-    //     const CLASS_NAME = "check-icon";
-    //     var tabElement = tabItem.tab;
-    //     var firstElement = tabElement.childNodes[0];
-    //     var isIcon = firstElement.className === CLASS_NAME;
-    //     var el = firstElement;
-    //     if (!isIcon) {
-    //         el = document.createElement("span");
-    //         el.className = CLASS_NAME;
-    //         tabElement.insertBefore(el, firstElement);
-    //     }
-    //     el.innerText = isDraft ? '*' : '';
-    // }
+  
 
     processAction(actionName, ticketId, webview, data, tabItem) {
         if (!ticketId)
@@ -244,6 +224,7 @@ class ActionProcessor {
             case "convert-project": tp.convertToVB(); break;
             case "update-draft-state": this.updateDraftState(tabItem, data); break;
             case "check-button-click": this.updateCheckState(tabItem, data); break;
+            case  "full-screen-editor": tp.openFullScrenEditor(data[0]); break;
         }
     }
 

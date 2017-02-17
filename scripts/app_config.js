@@ -11,6 +11,7 @@ class AppConfig {
         this.attachmentPath = this.rootISCPath + "Attachments";
         this.templateProjectsPath = this.scToolsPath + "\\TemplateProjects";
         this.totalCmdPath = "C:\\totalcmd\\TOTALCMD64.EXE";
+        this.checkerPath =  this.scToolsPath + "\\Checker\\DocumentChecker.exe";
     }
 
     getFileManagerPath(path) {

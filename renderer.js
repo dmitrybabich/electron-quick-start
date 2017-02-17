@@ -1,11 +1,11 @@
-const TabGroup = require("electron-tabs");
+ TabGroup = require("electron-tabs");
 // const dragula = require("dragula");
 const filesystem = require('fs');
 const fixedTabs = require("./scripts/fixed_tabs.js");
 const iscTabs = require("./scripts/isc_tabs.js");
 
 const downloader = require("./scripts/downloader.js");
-const gramHelper = require("./scripts/gram_helper");
+
 const {actionProcessor} = require("./scripts/action_processor.js");
 const path = require('path');
 const Combokeys = require("combokeys");
@@ -18,8 +18,6 @@ const clipboard = electron.clipboard;
 const searchInPage = require('electron-in-page-search').default;
 
 
-gramHelper.setWebView(document.getElementById("full-screen-edit"));
-gramHelper.setCloseButton(document.getElementById("close-checker-button"))
 
 
 
@@ -65,8 +63,6 @@ registerISCActionShortcut('ctrl+shift+z', "ZIP Project", "archive-project");
 
 
 iscTabs.subscribe((actionName, ticketId, webview, data, tabItem) => {
-    if (actionName === "full-screen-editor")
-        gramHelper.show(data);
     actionProcessor.processAction(actionName, ticketId, webview, data, tabItem);
 });
 
@@ -128,9 +124,9 @@ if (isDev) {
     //     closable: true,
 
     // });
-    // iscTabs.checkNeedOpen(tabGroup, "https://isc.devexpress.com/Thread/WorkplaceDetails?id=T416406");
+     iscTabs.checkNeedOpen(tabGroup, "https://isc.devexpress.com/Thread/WorkplaceDetails?id=T416406");
     //iscTabs.checkNeedOpen(tabGroup, "https://isc.devexpress.com/ContactBase/Details?userOid=d3377813-6dae-40ea-83d8-8b291e5bfbc8");
-    fixedTabs.init(tabGroup);
+    //fixedTabs.init(tabGroup);
 }
 else {
     fixedTabs.init(tabGroup);

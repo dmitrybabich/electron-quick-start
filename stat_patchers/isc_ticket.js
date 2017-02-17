@@ -209,7 +209,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 validateButton.css("border-width", " 1px");
                 validateButton.css("border-color", " green");
                 $buttonContainer.append(validateButton);
-                $buttonContainer.append(self.addEditorButtonCore('Trim', () => { self.trimEditor(editor) }));
+               // $buttonContainer.append(self.addEditorButtonCore('Trim', () => { self.trimEditor(editor) }));
                 $buttonContainer.append(self.addEditorButtonCore('Hello', () => { self.addGreeting(editor) }));
                 $buttonContainer.append(self.addEditorButtonCore('Welcome', () => { self.addWelcome(editor) }));
                 var $suggestionContainer = $("<div></div>");
@@ -353,7 +353,7 @@ document.addEventListener("DOMContentLoaded", () => {
             }
 
             self.validateEditorText = function (editor) {
-                var text = editor.getContent({ format: 'text' });
+                var text = editor.getContent({ format: 'html' });
                 ipcRenderer.sendToHost("full-screen-editor", text);
             }
 

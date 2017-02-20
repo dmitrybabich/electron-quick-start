@@ -124,9 +124,9 @@ if (isDev) {
     //     closable: true,
 
     // });
-     iscTabs.checkNeedOpen(tabGroup, "https://isc.devexpress.com/Thread/WorkplaceDetails?id=T416406");
+   //  iscTabs.checkNeedOpen(tabGroup, "https://isc.devexpress.com/Thread/WorkplaceDetails?id=T416406");
     //iscTabs.checkNeedOpen(tabGroup, "https://isc.devexpress.com/ContactBase/Details?userOid=d3377813-6dae-40ea-83d8-8b291e5bfbc8");
-    //fixedTabs.init(tabGroup);
+    fixedTabs.init(tabGroup);
 }
 else {
     fixedTabs.init(tabGroup);

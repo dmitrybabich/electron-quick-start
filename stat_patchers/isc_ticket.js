@@ -105,8 +105,8 @@ var func = () => {
         $(".code-block").css("line-height", "22px");
         $(".code-block").css("font-family", "'Roboto', sans-serif");
         $(".code-block").css("font-weight", "400");
-        $(".pull-left.photo").hide();
-        $(".media-body.userinfo>br").remove();
+        // $(".pull-left.photo").hide();
+        // $(".media-body.userinfo>br").remove();
         $("#ticket-header-second-row").css("font-size", "15px");
         $("h4").css("font-size", "18px");
         $("h4").css("font-weight", "400");
@@ -120,12 +120,7 @@ var func = () => {
 document.addEventListener("DOMContentLoaded", func);
 
 
-
-
 document.addEventListener("DOMContentLoaded", () => {
-
-
-
     var iscTools = function () {
         var self = this;
 

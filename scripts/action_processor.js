@@ -139,7 +139,7 @@ class TicketProcessor {
         return savePath;
     }
 
-    openFullScrenEditor(text)
+    openFullScreenEditor(text)
     {
         this.clipboard.writeHTML(text);
         var path = this.appConfig.checkerPath;
@@ -224,7 +224,7 @@ class ActionProcessor {
             case "convert-project": tp.convertToVB(); break;
             case "update-draft-state": this.updateDraftState(tabItem, data); break;
             case "check-button-click": this.updateCheckState(tabItem, data); break;
-            case  "full-screen-editor": tp.openFullScrenEditor(data[0]); break;
+            case  "full-screen-editor": tp.openFullScreenEditor(data[0]); break;
         }
     }
 

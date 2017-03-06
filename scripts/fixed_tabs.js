@@ -5,6 +5,7 @@ class FixedTabsHelper {
                 // plugins: true,
                 // nodeIntegration: true,
             },
+            disablewebsecurity: true,
             visible: true,
             closable: false,
             ready: (tab) => {
@@ -59,7 +60,7 @@ class FixedTabsHelper {
         const statApi = require("./stat_api.js");
         const appConfig = require("./app_config.js");
         this.tabGroup = tabGroup;
-        this.addFixedTab({ title: "S", src: statApi.getRepliesUrl(), disablePatchers: true });
+        this.addFixedTab({ title: "S", src: statApi.getRepliesUrl() , disablePatchers: true });
         this.addFixedTab({ title: "T", src: statApi.getMyTeamSituatioUrl(appConfig.teamName), disablePatchers: true });
         this.addFixedTab({ title: "H", src: "Views\\History\\Index.html", disablePatchers: true, nodeIntegration: true });
         this.addFixedTab({ title: "FL", src: statApi.getFirstLevelUri(appConfig.teamId), active: true }, statApi.getFirstLevelTicketCountUri(appConfig.teamId));

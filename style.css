@@ -30,6 +30,33 @@
     font-weight: bold;
 }
 
+.tab-icon
+{
+    display:  inline-block;
+}
+
+@keyframes spinner {
+  to {transform: rotate(360deg);}
+}
+ 
+.spinner:before {
+  content: '';
+  box-sizing: border-box;
+  position: absolute;
+  top: 20px;
+  left: 13px;
+  width: 13px;
+  height: 13px;
+  margin-top: -10px;
+  margin-left: -10px;
+  border-radius: 50%;
+  border: 2px solid #ccc;
+  border-top-color: #333;
+  animation: spinner .6s linear infinite;
+}
+
+
+
 
 
 .electron-in-page-search-window {

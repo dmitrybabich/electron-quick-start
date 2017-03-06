@@ -139,8 +139,7 @@ class TicketProcessor {
         return savePath;
     }
 
-    openFullScreenEditor(text)
-    {
+    openFullScreenEditor(text) {
         this.clipboard.writeHTML(text);
         var path = this.appConfig.checkerPath;
         this.exec(path);
@@ -174,28 +173,38 @@ class ActionProcessor {
 
 
     constructor() {
-        this.icons = ["draft-icon", "check-icon"];
-        this.iconValues = ["*", "✓"]
+        this.icons = [ "draft-icon", "check-icon", "spinner"];
+        this.iconValues = [ "*", "✓", " "]
     }
 
     checkCreateIcons(tabElement) {
+        var defaultIcons = tabElement.getElementsByClassName("etabs-tab-icon");
+        if (defaultIcons.length > 0)
+            tabElement.removeChild(defaultIcons[0]);
+
         if (tabElement.iconsCreated)
             return;
+
         tabElement.iconsCreated = true;
         var firstElement = tabElement.childNodes[0]
         for (var i = this.icons.length - 1; i >= 0; i--) {
-            let icon = document.createElement("span");
+            let icon = document.createElement("div");
             let iconName = this.icons[i];
-            icon.className = iconName;
+            icon.className = iconName + " tab-icon";
             tabElement.insertBefore(icon, firstElement);
-            tabElement[iconName] = { dom: icon, value: this.iconValues[i] };
+            var text =  this.iconValues[i];
+            tabElement[iconName] = { dom: icon, value: text};
+            icon.innerText = text;
+            icon.style.display = 'none';
         }
+
     }
     setIconState(tabItem, iconName, enabled) {
         var tabElement = tabItem.tab;
         this.checkCreateIcons(tabElement);
         var el = tabElement[iconName];
-        el.dom.innerText = enabled ? el.value : '';
+        var dom = el.dom;
+        dom.style.display = enabled?   null: 'none';
     }
 
     updateDraftState(tabItem, data) {
@@ -206,9 +215,13 @@ class ActionProcessor {
         this.setIconState(tabItem, "check-icon", true);
     }
 
+    updateLoadingState(tabItem, value) {
+        this.setIconState(tabItem, "spinner", value);
+    }
 
 
-  
+
+
 
     processAction(actionName, ticketId, webview, data, tabItem) {
         if (!ticketId)
@@ -224,7 +237,9 @@ class ActionProcessor {
             case "convert-project": tp.convertToVB(); break;
             case "update-draft-state": this.updateDraftState(tabItem, data); break;
             case "check-button-click": this.updateCheckState(tabItem, data); break;
-            case  "full-screen-editor": tp.openFullScreenEditor(data[0]); break;
+            case "did-start-loading": this.updateLoadingState(tabItem, true); break;
+            case "did-stop-loading": this.updateLoadingState(tabItem, false); break;
+            case "full-screen-editor": tp.openFullScreenEditor(data[0]); break;
         }
     }
 

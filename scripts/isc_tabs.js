@@ -89,16 +89,30 @@ class IscTabs {
                 var action = event.channel;
                 self.processAction(action, tabItem.ticketId, webView, event.args, tabItem);
             });
+
+
+            webView.addEventListener('did-start-loading', function (event) {
+                    self.processAction('did-start-loading', tabItem.ticketId, webView, event.args, tabItem);
+            });
+
+            webView.addEventListener('did-stop-loading', function (event) {
+                self.processAction('did-stop-loading', tabItem.ticketId, webView, event.args, tabItem);
+            });
+
+
+             self.processAction('did-start-loading', tabItem.ticketId, webView, null , tabItem);
+
+             
             webView.addEventListener("page-title-updated", function (event) {
                 var newTitle = webView.getTitle();
                 var url = webView.getURL();
-var id = tabItem.ticketId;
+                var id = tabItem.ticketId;
                 var doc = {
                     date: new Date(), title: newTitle, url: url, ticketId: id
                 };
 
                 db.insert(doc, function (err, newDoc) {
-                    console.log(newDoc);   // Callback is optional
+                    // console.log(newDoc);   // Callback is optional
                     // newDoc is the newly inserted document, including its _id
                     // newDoc has no key called notToBeSaved since its value was undefined
                 });

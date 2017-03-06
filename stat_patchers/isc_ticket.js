@@ -128,7 +128,13 @@ document.addEventListener("DOMContentLoaded", () => {
         self.ResetAssignToHelper = new function () {
             var self = this;
             self.resetAssignTo = function () {
-                fullViewModel.issueDetails.selectedAssignTo.value.currentValue("");
+                var value = fullViewModel.issueDetails.selectedProduct.value.currentValue();
+                setTimeout(function () {
+                    var span = $("span:contains('Assigned')");
+                    span.css("color", "red");
+                    span.css("font-weight", "bold");
+                }, 1000);
+
             };
             self.run = function () {
                 fullViewModel.issueDetails.selectedProduct.value.currentValue.subscribe(self.resetAssignTo);
@@ -199,7 +205,7 @@ document.addEventListener("DOMContentLoaded", () => {
             };
 
             self.addWelcome = function (editor) {
-                editor.insertContent('You are always welcome ' + self.getUserName() + '!');
+                editor.insertContent('You are always welcome, ' + self.getUserName() + '!');
             };
 
 

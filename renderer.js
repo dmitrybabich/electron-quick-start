@@ -1,4 +1,4 @@
- TabGroup = require("electron-tabs");
+TabGroup = require("electron-tabs");
 // const dragula = require("dragula");
 const filesystem = require('fs');
 const fixedTabs = require("./scripts/fixed_tabs.js");
@@ -11,7 +11,8 @@ const path = require('path');
 const Combokeys = require("combokeys");
 var shortcuts = new Combokeys(document.documentElement);
 const {snackbar} = require('./scripts/ui.js');
-var electron = require('electron');
+var electron  = require('electron');
+const {dialog} = require('electron').remote;
 var ipcRenderer = electron.ipcRenderer;
 var shell = electron.shell;
 const clipboard = electron.clipboard;
@@ -32,7 +33,7 @@ shortcuts.bind('ctrl+f', function () {
     snackbar.showText("Search");
     var tab = tabGroup.getActiveTab();
     var vw = tab.webview;
-     vw.search.openSearchWindow();
+    vw.search.openSearchWindow();
 });
 
 shortcuts.bind('ctrl+shift+r', function () {
@@ -74,7 +75,7 @@ var prevTab = null;
 tabGroup.on("tab-removed", (tab, tabGroup) => { tab.ticketId = null; });
 tabGroup.on("tab-active", (tab, tabGroup) => {
     if (prevTab)
-    prevTab.webview.search.closeSearchWindow();
+        prevTab.webview.search.closeSearchWindow();
     prevTab = tab;
     setTimeout(function () {
         ipcRenderer.send('active-tab-changed', tab.ticketId);
@@ -100,12 +101,66 @@ tabGroup.on("tab-added", (tab, tg) => {
     webview.addEventListener('new-window', (e) => {
         func(e.url);
     });
+
     // webview.addEventListener('will-navigate', (e) => {
     //     webview.stop();
     //     func(e.url);
     //     webview.stop();
     // });
+
+
     tab.tab.setAttribute("style", "-webkit-app-region: no-drag;");
+
+
+    setTimeout(function () {
+        var button = tab.tabElements.buttons.getElementsByClassName("etabs-tab-button-close")[0];
+        var closeAction = () => { tab.close(); };
+        if (button) {
+            var old_element = button;
+            button = old_element.cloneNode(true);
+            old_element.parentNode.replaceChild(button, old_element);
+            button.addEventListener('click', function (event) {
+                event.stopPropagation();
+                event.preventDefault();
+                tab.webview.executeJavaScript("window.onbeforeunload.apply(window);", function (x) {
+                    var message = x;
+                    if (!message)
+                    {
+                        closeAction();
+                    }
+                    else
+                    {
+                        var onClick = function(args){
+if (args === 0)
+{
+closeAction();
+}
+                        };
+                        dialog.showMessageBox({ 
+                            type : "warning",
+                            buttons :["Close", "Cancel"],
+                            defaultId : 1,
+                            title :"Close the page?",
+                            message : message ,
+
+
+                        },onClick );
+                    }
+                });
+
+
+            });
+
+
+
+        }
+
+
+
+    }, 1000);
+
+
+
 });
 
 const isDev = require('electron-is-dev');
@@ -124,7 +179,7 @@ if (isDev) {
     //     closable: true,
 
     // });
-   //  iscTabs.checkNeedOpen(tabGroup, "https://isc.devexpress.com/Thread/WorkplaceDetails?id=T416406");
+    //  iscTabs.checkNeedOpen(tabGroup, "https://isc.devexpress.com/Thread/WorkplaceDetails?id=T416406");
     //iscTabs.checkNeedOpen(tabGroup, "https://isc.devexpress.com/ContactBase/Details?userOid=d3377813-6dae-40ea-83d8-8b291e5bfbc8");
     fixedTabs.init(tabGroup);
 }
